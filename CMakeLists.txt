@@ -245,14 +245,15 @@ if (USE_QT5)
         add_feature_info("WITH_WEBKIT, QtWebKit and QtWebKitWidgets modules" Qt5WebKitWidgets_FOUND "Support showing previews for URLs in chat")
 
         if (WITH_QML)
-            find_package(Qt5Quick QUIET)
-            set_package_properties(Qt5Quick PROPERTIES TYPE RECOMMENDED
+            #find_package(Qt5Quick QUIET)
+            find_package(Qt5QuickWidgets QUIET)
+            set_package_properties(Qt5QuickWidgets PROPERTIES TYPE RECOMMENDED
                 URL "http://qt.digia.com"
                 DESCRIPTION "dynamic user interface framework"
                 PURPOSE     "Needed for the QML based intreface"
             )
         endif()
-        add_feature_info("WITH_QML, QtQuick modules" Qt5Quick_FOUND "Support for the QML based UI")
+        add_feature_info("WITH_QML, QtQuick modules" Qt5QuickWidgets_FOUND "Support for the QML based UI")
 
         # KDE Frameworks
         ################
