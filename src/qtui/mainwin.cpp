@@ -720,7 +720,7 @@ void MainWin::changeActiveBufferView(int bufferViewId)
 
     BufferView *current = activeBufferView();
     if (current) {
-        qobject_cast<BufferViewDock *>(current->parent())->setActive(false);
+        qobject_cast<BufferViewDock *>(current->parent()->parent())->setActive(false);
         _activeBufferViewIndex = -1;
     }
 
