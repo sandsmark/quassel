@@ -20,7 +20,6 @@
 
 #include "networkmodel.h"
 
-#include <QAbstractItemView>
 #include <QMimeData>
 #if QT_VERSION < 0x050000
 #include <QTextDocument>        // for Qt::escape()

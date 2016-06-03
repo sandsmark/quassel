@@ -1,0 +1,8 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource prefix="/qml">
+        <file>BufferView.qml</file>
+        <file>MainView.qml</file>
+        <file>MessagesView.qml</file>
+    </qresource>
+</RCC>

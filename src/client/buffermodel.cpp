@@ -20,7 +20,9 @@
 
 #include "buffermodel.h"
 
+#ifndef HAVE_QML
 #include <QAbstractItemView>
+#endif
 
 #include "client.h"
 #include "networkmodel.h"
@@ -81,10 +83,12 @@ void BufferModel::networkConnectionChanged(Network::ConnectionState state)
 }
 
 
+#ifndef HAVE_QML
 void BufferModel::synchronizeView(QAbstractItemView *view)
 {
     _selectionModelSynchronizer.synchronizeSelectionModel(view->selectionModel());
 }
+#endif
 
 
 void BufferModel::setCurrentIndex(const QModelIndex &newCurrent)
