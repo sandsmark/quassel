@@ -42,8 +42,11 @@ include(QuasselMacros)
 
 # First, choose a Qt version. We support USE_QT4 and USE_QT5; if neither is set, prefer Qt4 for now
 option(USE_QT5 "Enable support for Qt5 (disables KDE integration)" OFF)
+option(USE_QML "Enable QML-based Ubuntu Touch GUI (implies Qt5)" OFF)
 if (USE_QT4) # takes precedence
     set(USE_QT5 OFF)
+elseif (USE_QML)
+    set(USE_QT5 ON)
 else()
     if (NOT USE_QT5)
         set(USE_QT4 ON)
@@ -70,7 +73,11 @@ else()
     add_feature_info(WITH_KDE WITH_KDE "Integrate with the KDE Frameworks runtime environment")
 endif()
 
-cmake_dependent_option(WITH_OXYGEN "Install Oxygen icon set (usually shipped with KDE)" ON "NOT WITH_KDE" OFF)
+if (USE_QML)
+    cmake_dependent_option(WITH_OXYGEN "Install Oxygen icon set" OFF "NOT WITH_KDE" OFF)
+else()
+    cmake_dependent_option(WITH_OXYGEN "Install Oxygen icon set (usually shipped with KDE)" ON "NOT WITH_KDE" OFF)
+endif()
 if (NOT WITH_KDE)
     add_feature_info(WITH_OXYGEN WITH_OXYGEN "Install Oxygen icon set")
 endif()
@@ -91,6 +98,10 @@ set(EMBED_DEFAULT OFF)
 if (STATIC OR WIN32 OR APPLE)
     set(EMBED_DEFAULT ON)
 endif()
+if (USE_QML)
+    set(EMBED_DEFAULT ON)
+endif()
+
 cmake_dependent_option(EMBED_DATA "Embed icons and translations into the binaries instead of installing them" ${EMBED_DEFAULT}
                                    "NOT STATIC;NOT WIN32;NOT WITH_KDE" ${EMBED_DEFAULT})
 if (NOT EMBED_DEFAULT)
@@ -189,6 +200,19 @@ if (USE_QT5)
     set_package_properties(Qt5Network PROPERTIES TYPE REQUIRED
         DESCRIPTION "the network module for Qt5"
     )
+
+    if (USE_QML)
+        find_package(Qt5Qml ${QT_MIN_VERSION} QUIET)
+        set_package_properties(Qt5Qml PROPERTIES TYPE REQUIRED
+            DESCRIPTION "the QML module for Qt5"
+        )
+        if (Qt5Qml_FOUND)
+            add_definitions(-DHAVE_QML)
+            set(HAVE_QML true)
+        else()
+            message(FATAL_ERROR "QML not found")
+        endif()
+    endif()
 
     if (BUILD_GUI)
         find_package(Qt5Gui QUIET)
