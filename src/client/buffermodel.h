@@ -45,7 +45,9 @@ public:
     inline QItemSelectionModel *standardSelectionModel() const { return _selectionModelSynchronizer.selectionModel(); }
 
     inline void synchronizeSelectionModel(QItemSelectionModel *selectionModel) { _selectionModelSynchronizer.synchronizeSelectionModel(selectionModel); }
+#ifndef HAVE_QML
     void synchronizeView(QAbstractItemView *view);
+#endif
 
     inline QModelIndex currentIndex() { return standardSelectionModel()->currentIndex(); }
     inline BufferId currentBuffer() { return currentIndex().data(NetworkModel::BufferIdRole).value<BufferId>(); }

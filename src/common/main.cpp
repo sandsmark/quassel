@@ -24,11 +24,15 @@
 
 #ifdef BUILD_CORE
 #  include "coreapplication.h"
+#elif defined HAVE_QML && !defined(BUILD_MONO)
+#  include "qmluiapplication.h"
 #elif defined BUILD_QTUI
 #  include "aboutdata.h"
 #  include "qtuiapplication.h"
 #elif defined BUILD_MONO
+#ifdef HAVE_KF5
 #  include "aboutdata.h"
+#endif
 #  include "monoapplication.h"
 
 #else
@@ -186,6 +190,8 @@ int main(int argc, char **argv)
 
 #if defined BUILD_CORE
     CoreApplication app(argc, argv);
+#  elif defined HAVE_QML && !defined(BUILD_MONO)
+    QmlUiApplication app(argc, argv);
 #elif defined BUILD_QTUI
 # if QT_VERSION >= 0x050600 && defined(Q_OS_WIN)
     QtUiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
