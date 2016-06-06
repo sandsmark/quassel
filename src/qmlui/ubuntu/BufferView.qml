@@ -63,10 +63,8 @@ Page {
                         onClicked: {
                             buffersList.currentIndex = index
                             adaptivePageLayout.addPageToNextColumn(bufferPage, Qt.resolvedUrl('MessagesView.qml'), {
-                                bufferName: modelData.bufferName,
                                 bufferId: modelData.bufferId,
-                                lastSeenMsgId: modelData.lastSeenMsgId,
-                                topic: modelData.topic
+                                networkId: modelData.networkId
                             })
                         }
                     }
