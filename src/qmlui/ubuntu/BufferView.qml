@@ -4,11 +4,25 @@ import Quassel 0.1
 
 Page {
     id: bufferPage
+    property string themeNamespace: 'Ubuntu.Components.Themes.'
     header: PageHeader {
         title: qsTr('Quassel IRC')
         subtitle: statusbarMessage
         flickable: networksList
         clip: true
+        trailingActionBar.actions: [
+            Action {
+                id: lightTheme
+                iconName: 'torch-on'
+                onTriggered: theme.name = themeNamespace + 'Ambiance'
+                visible: theme.name.indexOf('SuruDark') > -1
+            },
+            Action {
+                iconName: 'torch-off'
+                onTriggered: theme.name = themeNamespace + 'SuruDark'
+                visible: !lightTheme.visible
+            }
+        ]
     }
 
     UbuntuListView {
