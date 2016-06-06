@@ -12,6 +12,7 @@
 #include "clientbufferviewmanager.h"
 #include "coreconnection.h"
 
+#include "qmluiaccountmodel.h"
 #include "qmluibuffermodel.h"
 #include "qmluiapplication.h"
 #include "qmluimessagemodel.h"
@@ -54,6 +55,7 @@ void MainWin::init()
 
     setDisconnectedState(); // Disable menus and stuff
 
+    qmlRegisterType<QmlUiAccountModel>("Quassel", 0, 1, "AccountModel");
     qmlRegisterType<QmlUiBufferModel>("Quassel", 0, 1, "BufferModel");
     qmlRegisterType<QmlUiMessageModel>("Quassel", 0, 1, "MessageModel");
 
