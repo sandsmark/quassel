@@ -27,7 +27,11 @@ Page {
 
     UbuntuListView {
         id: networksList
-        anchors.fill: parent
+        width: parent.width
+        anchors {
+            top: parent.top
+            bottom: coreSelector.top
+        }
         focus: true
         clip: true
         model: BufferModel { }
@@ -67,6 +71,7 @@ Page {
                                 width: units.gu(4)
                                 height: width
                                 visible: modelData.activity
+                                color: UbuntuColors.orange
                                 Label {
                                     anchors.centerIn: parent
                                     text: modelData.activity
@@ -84,6 +89,25 @@ Page {
                     }
                 }
             }
+        }
+    }
+
+    // FIXME: Hide if there's only an internal core
+    OptionSelector {
+        id: coreSelector
+        anchors {
+            bottom: bufferPage.bottom
+            topMargin: units.gu(0.5)
+            bottomMargin: units.gu(0.5)
+        }
+        enabled: false // TODO
+        width: parent.width
+        model: AccountModel { }
+        selectedIndex: model.lastAccountId
+        delegate: OptionSelectorDelegate {
+            text: accountName !== '' ? accountName : 'Core #%1'.arg(index)
+            subText: '%1@%2'.arg(user).arg(hostname)
+            iconName: useSecureConnection ? '' : '' // FIXME
         }
     }
 }
