@@ -3,6 +3,7 @@ set(SOURCES
     chatlinemodelitem.cpp
     mainwin.cpp
     qmlui.cpp
+    qmluiaccountmodel.cpp
     qmluiapplication.cpp
     qmluibuffermodel.cpp
     qmluimessagemodel.cpp
