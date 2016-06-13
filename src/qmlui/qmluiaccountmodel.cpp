@@ -5,8 +5,12 @@
 QmlUiAccountModel::QmlUiAccountModel(QObject *parent)
     : QSortFilterProxyModel(parent)
 {
+    connect(this, SIGNAL(modelReset()), SIGNAL(countChanged()));
+    connect(this, SIGNAL(rowsInserted(QModelIndex,int,int)), SIGNAL(countChanged()));
+    connect(this, SIGNAL(rowsRemoved(QModelIndex,int,int)), SIGNAL(countChanged()));
     setDynamicSortFilter(true);
     setSourceModel(Client::coreAccountModel());
+    settings.notify("LastAccount", this, SIGNAL(lastAccountIdChanged()));
 }
 
 

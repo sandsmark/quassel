@@ -98,7 +98,6 @@ Page {
         }
     }
 
-    // FIXME: Hide if there's only an internal core
     OptionSelector {
         id: coreSelector
         anchors {
@@ -106,14 +105,17 @@ Page {
             topMargin: units.gu(0.5)
             bottomMargin: units.gu(0.5)
         }
-        enabled: false // TODO
+        enabled: model.count > 1
         width: parent.width
         model: AccountModel { }
         selectedIndex: model.lastAccountId
         delegate: OptionSelectorDelegate {
-            text: accountName !== '' ? accountName : 'Core #%1'.arg(index)
-            subText: '%1@%2'.arg(user).arg(hostname)
-            iconName: useSecureConnection ? '' : '' // FIXME
+            text: accountName !== '' ? accountName : '#%1'.arg(accountId)
+            subText: '%1@%2:%3'.arg(user).arg(hostname).arg(port)
+            iconName: useSecureConnection ? 'channel-secure-symbolic' : 'channel-insecure-symbolic'
+            constrainImage: true
+            colourImage: true
+            onClicked: coreSelector.model.lastAccountId = accountId
         }
     }
 }
