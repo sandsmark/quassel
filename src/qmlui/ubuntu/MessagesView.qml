@@ -69,11 +69,15 @@ Page {
             bottomMargin: units.gu(0.5)
         }
         width: parent.width
-        enabled: false // FIXME: messagesModel.connected
+        enabled: messagesModel.connected
         primaryItem: Label {
             id: nickLabel
             text: messagesModel.nick
             enabled: false
+        }
+        onAccepted: {
+            messagesModel.userInput(text)
+            text = ''
         }
         property real scrollOffset: height
         Keys.onPressed: {

@@ -29,6 +29,9 @@ public:
     // QSortFilterProxyModel
     bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const;
 
+public Q_SLOTS:
+    Q_INVOKABLE void userInput(const QString& message);
+
 Q_SIGNALS:
     void bufferIdChanged();
     void bufferNameChanged();
