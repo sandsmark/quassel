@@ -3,7 +3,9 @@
 #include "client.h"
 
 QmlUiMessageModel::QmlUiMessageModel(QObject *parent)
-    : QSortFilterProxyModel(parent)
+    : QSortFilterProxyModel(parent),
+    _networkId(0),
+    _network(0)
 {
     // _showMeta = true;
     setDynamicSortFilter(true);
@@ -58,4 +60,10 @@ bool QmlUiMessageModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourc
     if (message.type() > Message::Action && !_showMeta)
         return false;
     return message.bufferId().toInt() == _bufferId;
+}
+
+void QmlUiMessageModel::userInput(const QString& message)
+{
+    BufferInfo bufferInfo(_bufferId, _networkId, BufferInfo::ChannelBuffer);
+    Client::userInput(bufferInfo, message);
 }
