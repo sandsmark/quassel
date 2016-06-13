@@ -46,7 +46,7 @@ Page {
                 expansion.expanded = true
             }
             Column {
-                anchors.fill: parent
+                width: parent.width
                 Label {
                     id: networkLabel
                     text: network
