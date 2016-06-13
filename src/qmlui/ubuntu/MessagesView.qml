@@ -23,7 +23,6 @@ Page {
             bottom: messageInput.top
         }
         width: parent.width
-        focus: true
         clip: true
         highlight: null
         model: MessageModel {
@@ -44,6 +43,22 @@ Page {
                 title.maximumLineCount: 0
             }
         }
+
+        ShortcutBubble {
+            anchors.right: parent.right
+            y: height + messagesHeader.y + messagesHeader.height
+            anchors.margins: width
+            shortcut: '▲'
+            visible: messageInput.activeFocus && shiftPressed
+        }
+
+        ShortcutBubble {
+            anchors.right: parent.right
+            anchors.bottom: parent.bottom
+            anchors.margins: width
+            shortcut: '▼'
+            visible: messageInput.activeFocus && shiftPressed
+        }
     }
 
     TextField {
@@ -59,6 +74,32 @@ Page {
             id: nickLabel
             text: messagesModel.nick
             enabled: false
+        }
+        property real scrollOffset: height
+        Keys.onPressed: {
+            if (!(event.modifiers & Qt.ShiftModifier))
+                return
+            switch (event.key) {
+            case Qt.Key_Down:
+                messagesList.contentY += scrollOffset
+                break
+            case Qt.Key_Up:
+                messagesList.contentY -= scrollOffset
+                break
+            default:
+                return
+            }
+            messagesList.returnToBounds()
+            event.accepted = true
+        }
+        action: Action {
+            id: messageInputFocusAction
+            shortcut: 'Ctrl+L'
+            onTriggered: messageInput.forceActiveFocus(Qt.TabFocusReason)
+        }
+        secondaryItem: ShortcutBubble {
+            action: messageInputFocusAction
+            visible: controlPressed
         }
     }
 }

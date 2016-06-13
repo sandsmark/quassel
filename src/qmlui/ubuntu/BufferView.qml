@@ -32,7 +32,6 @@ Page {
             top: parent.top
             bottom: coreSelector.top
         }
-        focus: true
         clip: true
         model: BufferModel { }
         highlight: null
@@ -41,6 +40,7 @@ Page {
             height: networkLabel.height
             expansion.height: networkLabel.height + buffersList.height
             onClicked: expansion.expanded = !expansion.expanded
+            Keys.forwardTo: [buffersList]
             Component.onCompleted: {
                 networksList.ViewItems.expansionFlags = 0
                 expansion.expanded = true
@@ -63,28 +63,34 @@ Page {
                     visible: networkItem.expansion.expanded
                     model: buffers
                     delegate: ListItem {
+                        id: bufferItem
                         height: bufferItemLayout.height
                         ListItemLayout {
                             id: bufferItemLayout
                             title.text: modelData.bufferName
-                            UbuntuShape {
-                                width: units.gu(4)
-                                height: width
+                            ShortcutBubble {
+                                action: bufferSwitchAction
+                                SlotsLayout.position: SlotsLayout.Leading
+                                visible: altPressed
+                            }
+                            ShortcutBubble {
                                 visible: modelData.activity
                                 color: UbuntuColors.orange
-                                Label {
-                                    anchors.centerIn: parent
-                                    text: modelData.activity
-                                }
                                 SlotsLayout.position: SlotsLayout.Trailing
                             }
                         }
-                        onClicked: {
-                            buffersList.currentIndex = index
-                            adaptivePageLayout.addPageToNextColumn(bufferPage, Qt.resolvedUrl('MessagesView.qml'), {
-                                bufferId: modelData.bufferId,
-                                networkId: modelData.networkId
-                            })
+                        action: Action {
+                            id: bufferSwitchAction
+                            onTriggered: {
+                                buffersList.currentIndex = index
+                                adaptivePageLayout.addPageToNextColumn(bufferPage, Qt.resolvedUrl('MessagesView.qml'), {
+                                    bufferId: modelData.bufferId,
+                                    networkId: modelData.networkId
+                                })
+                            }
+                            shortcut: (modelData.bufferId < 10)
+                                ? 'Alt+%1'.arg(modelData.bufferId)
+                                : 'Alt+%1'.arg(String.fromCharCode(97 + modelData.bufferId - 10))
                         }
                     }
                 }

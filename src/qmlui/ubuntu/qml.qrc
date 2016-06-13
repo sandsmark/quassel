@@ -4,5 +4,6 @@
         <file>BufferView.qml</file>
         <file>MainView.qml</file>
         <file>MessagesView.qml</file>
+        <file>ShortcutBubble.qml</file>
     </qresource>
 </RCC>
