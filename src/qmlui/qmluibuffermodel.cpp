@@ -23,7 +23,7 @@ QVariant QmlUiBufferModel::data(const QModelIndex &index, int role) const
     {
         NetworkId networkId(sourceIndex.data(NetworkModel::NetworkIdRole).value<NetworkId>());
         QVariantList bufferModel;
-        QModelIndex child(sourceIndex.child(sourceIndex.row(), sourceIndex.column()));
+        QModelIndex child(sourceIndex.child(0, sourceIndex.column()));
         while (child.isValid()) {
             BufferId bufferId(child.data(role).value<BufferId>());
             QString bufferName(dynamic_cast<NetworkModel *>(sourceModel())->bufferName(bufferId));
