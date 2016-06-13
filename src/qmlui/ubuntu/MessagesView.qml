@@ -6,7 +6,6 @@ Page {
     id: messagesPage
     property alias bufferId: messagesModel.bufferId
     property alias networkId: messagesModel.networkId
-    property alias nick: nickLabel.text
 
     header: PageHeader {
         id: messagesHeader
@@ -28,20 +27,15 @@ Page {
         model: MessageModel {
             id: messagesModel
         }
-        delegate: ListItem {
-            height: messageItemLayout.height
-            divider.visible: model.divider || lastSeen
-            divider.colorFrom: lastSeen ? UbuntuColors.orange : theme.palette.normal.base
-            property bool lastSeen: messagesModel.lastSeenMsgId == model.msgId
-            ListItemLayout {
-                id: messageItemLayout
-                subtitle.text: model.divider ? '<b>%2</b> %1'.arg(i18n.relativeDateTime(timestamp)).arg(sender.split('!')[0]) : ''
-                title.text: message.replace('>', '&gt;').replace('<', '&lt;').replace('&', '&amp;').replace(/(https?:\/\/[^\s]+)/g, '<a href="$1">$1</a>')
-                title.textFormat: Text.StyledText
-                title.linkColor: UbuntuColors.orange
-                title.onLinkActivated: Qt.openUrlExternally(link)
-                title.maximumLineCount: 0
-            }
+        delegate: MessageItem {
+            sender: model.sender
+            lastSeen: messagesModel.lastSeenMsgId == model.msgId
+            previousSibling: model.previousSibling
+            nextSibling: model.nextSibling
+            message: model.message
+            timestamp: model.timestamp
+            highlighted: model.highlight || model.self
+            action: model.action
         }
 
         ShortcutBubble {

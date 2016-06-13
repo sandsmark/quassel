@@ -25,14 +25,28 @@ QVariant QmlUiMessageModel::data(const QModelIndex &index, int role) const
         return message.contents();
     case MessageModel::TimestampRole:
         return message.timestamp();
-    case MessageModel::EditRole:
+    case PreviousSiblingRole:
     {
-        // Does the next row share the same sender? Should we have a divider?
+        // Does the previous row share the same sender?
+        QModelIndex previous(index.sibling(index.row() - 1, index.column()));
+        if (!previous.isValid())
+            return false;
+        return previous.data(MessageModel::UserRole) == index.data(MessageModel::UserRole);
+    }
+    case NextSiblingRole:
+    {
+        // Does the next row share the same sender?
         QModelIndex next(index.sibling(index.row() + 1, index.column()));
         if (!next.isValid())
-            return true;
-        return next.data(MessageModel::UserRole) != index.data(MessageModel::UserRole);
+            return false;
+        return next.data(MessageModel::UserRole) == index.data(MessageModel::UserRole);
     }
+    case HighlightRole:
+        return QVariant::fromValue<bool>(message.flags() & Message::Highlight);
+    case SelfRole:
+        return QVariant::fromValue<bool>(message.flags() & Message::Self);
+    case ActionRole:
+        return QVariant::fromValue<bool>(message.type() == Message::Action);
     case MessageModel::MsgIdRole:
         return QVariant::fromValue<int>(message.msgId().toInt());
     default:
@@ -47,7 +61,11 @@ QHash<int, QByteArray> QmlUiMessageModel::roleNames() const
     roles.insert(MessageModel::UserRole, "sender");
     roles.insert(MessageModel::MessageRole, "message");
     roles.insert(MessageModel::TimestampRole, "timestamp");
-    roles.insert(MessageModel::EditRole, "divider");
+    roles.insert(PreviousSiblingRole, "previousSibling");
+    roles.insert(NextSiblingRole, "nextSibling");
+    roles.insert(HighlightRole, "highlight");
+    roles.insert(SelfRole, "self");
+    roles.insert(ActionRole, "action");
     roles.insert(MessageModel::MsgIdRole, "msgId");
     return roles;
 }
