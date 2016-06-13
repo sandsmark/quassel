@@ -23,6 +23,14 @@ class QmlUiMessageModel : public QSortFilterProxyModel
 public:
     QmlUiMessageModel(QObject *parent = 0);
 
+    enum {
+        PreviousSiblingRole,
+        NextSiblingRole,
+        HighlightRole,
+        SelfRole,
+        ActionRole,
+    };
+
     // QAbstractListModel
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
     QHash<int, QByteArray>roleNames() const;

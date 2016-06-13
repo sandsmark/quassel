@@ -3,6 +3,7 @@
     <qresource prefix="/qml">
         <file>BufferView.qml</file>
         <file>MainView.qml</file>
+        <file>MessageItem.qml</file>
         <file>MessagesView.qml</file>
         <file>ShortcutBubble.qml</file>
     </qresource>
