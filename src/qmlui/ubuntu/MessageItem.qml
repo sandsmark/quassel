@@ -18,6 +18,7 @@ ListItem {
 
     UbuntuShape {
         id: shape
+        x: padding
         y: previousSibling ? 0 : padding
         width: parent.width - padding * 2
         height: y + column.height
@@ -65,15 +66,11 @@ ListItem {
                 }
             }
 
-            Label {
-                text: message.replace('>', '&gt;').replace('<', '&lt;').replace('&', '&amp;')
-                    .replace(/(https?:\/\/[^\s]+)/g, '<a href="$1">$1</a>')
-                textFormat: Text.StyledText
-                wrapMode: Text.Wrap
-                width: column.width
-                linkColor: UbuntuColors.orange
-                onLinkActivated: Qt.openUrlExternally(link)
+            StyledLabel {
+                id: messageLabel
+                text: message
                 color: highlighted ? theme.palette.highlighted.foregroundText : theme.palette.normal.foregroundText
+                width: column.width
             }
         }
     }

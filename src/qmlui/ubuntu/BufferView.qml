@@ -7,7 +7,9 @@ Page {
     property string themeNamespace: 'Ubuntu.Components.Themes.'
     header: PageHeader {
         title: qsTr('Quassel IRC')
-        subtitle: statusbarMessage
+        extension: HeaderExtensionLabel {
+            text: statusbarMessage
+        }
         flickable: networksList
         clip: true
         trailingActionBar.actions: [
@@ -47,10 +49,10 @@ Page {
             }
             Column {
                 width: parent.width
-                Label {
+                ListItemLayout {
                     id: networkLabel
-                    text: network
-                    height: buffersList.labelHeight
+                    title.text: network
+                    title.font.weight: Font.Bold
                     width: parent.width
                 }
 
