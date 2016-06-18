@@ -10,7 +10,10 @@ Page {
     header: PageHeader {
         id: messagesHeader
         title: messagesModel.bufferName
-        subtitle: messagesModel.topic
+        Mouse.forwardTo: [extension]
+        extension: HeaderExtensionLabel {
+            text: messagesModel.topic
+        }
         flickable: messagesList
         clip: true
     }
@@ -57,12 +60,14 @@ Page {
 
     TextField {
         id: messageInput
+        property real padding: units.gu(0.5)
         anchors {
             bottom: messagesPage.bottom
-            topMargin: units.gu(0.5)
-            bottomMargin: units.gu(0.5)
+            topMargin: padding
+            bottomMargin: padding
         }
-        width: parent.width
+        x: padding
+        width: parent.width - padding * 2
         enabled: messagesModel.connected
         primaryItem: Label {
             id: nickLabel

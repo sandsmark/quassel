@@ -2,9 +2,11 @@
 <RCC version="1.0">
     <qresource prefix="/qml">
         <file>BufferView.qml</file>
+        <file>HeaderExtensionLabel.qml</file>
         <file>MainView.qml</file>
         <file>MessageItem.qml</file>
         <file>MessagesView.qml</file>
         <file>ShortcutBubble.qml</file>
+        <file>StyledLabel.qml</file>
     </qresource>
 </RCC>
