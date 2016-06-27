@@ -13,6 +13,10 @@ set(QUASSEL_MAJOR  0)
 set(QUASSEL_MINOR 13)
 set(QUASSEL_PATCH  0)
 set(QUASSEL_VERSION_STRING "0.13-pre")
+# Client identification
+set(QUASSEL_CLIENT_NAME "quasselclient" CACHE STRING "applicationName (Client)")
+set(QUASSEL_DOMAIN "quassel-irc.org" CACHE STRING "organizationDomain")
+set(QUASSEL_BUG_URL "http://bugs.quassel-irc.org/projects/quassel-irc/issues/new" CACHE STRING "Report bugs here")
 
 # Output CMake version and build type for debug reasons
 message(STATUS "Using CMake ${CMAKE_VERSION}")

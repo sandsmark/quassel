@@ -258,9 +258,9 @@ void Quassel::setupBuildInfo()
 {
     _buildInfo.applicationName = "quassel";
     _buildInfo.coreApplicationName = "quasselcore";
-    _buildInfo.clientApplicationName = "quasselclient";
+    _buildInfo.clientApplicationName = QUASSEL_CLIENT_NAME;
     _buildInfo.organizationName = "Quassel Project";
-    _buildInfo.organizationDomain = "quassel-irc.org";
+    _buildInfo.organizationDomain = QUASSEL_DOMAIN;
 
     _buildInfo.protocolVersion = 10; // FIXME: deprecated, will be removed
 
