@@ -15,6 +15,15 @@ Page {
         leadingActionBar {
             actions: [
                 Action {
+                    iconName: 'settings'
+                    text: qsTr('Settings')
+                    visible: accountModel.lastAccountId
+                    onTriggered: adaptivePageLayout.addPageToNextColumn(bufferPage, Qt.resolvedUrl('AccountSettings.qml'), {
+                        accountModel: accountModel,
+                        accountId: accountModel.lastAccountId
+                    })
+                },
+                Action {
                     iconName: 'help'
                     text: qsTr('&Help')
                     onTriggered: Qt.openUrlExternally(bugUrl)
