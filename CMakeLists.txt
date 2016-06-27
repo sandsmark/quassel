@@ -13,6 +13,10 @@ set(QUASSEL_MAJOR  0)
 set(QUASSEL_MINOR 12)
 set(QUASSEL_PATCH  4)
 set(QUASSEL_VERSION_STRING "0.12.4")
+# Client identification
+set(QUASSEL_CLIENT_NAME "quasselclient" CACHE STRING "applicationName (Client)")
+set(QUASSEL_DOMAIN "quassel-irc.org" CACHE STRING "organizationDomain")
+set(QUASSEL_BUG_URL "http://bugs.quassel-irc.org/projects/quassel-irc/issues/new" CACHE STRING "Report bugs here")
 
 # We want to know CMake's version for debug reasons
 message(STATUS "Using CMake ${CMAKE_VERSION}")
