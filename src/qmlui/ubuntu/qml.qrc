@@ -1,6 +1,7 @@
 <!DOCTYPE RCC>
 <RCC version="1.0">
     <qresource prefix="/qml">
+        <file>AccountSettings.qml</file>
         <file>BufferView.qml</file>
         <file>HeaderExtensionLabel.qml</file>
         <file>MainView.qml</file>
@@ -8,5 +9,6 @@
         <file>MessagesView.qml</file>
         <file>ShortcutBubble.qml</file>
         <file>StyledLabel.qml</file>
+        <file>ValueInput.qml</file>
     </qresource>
 </RCC>
