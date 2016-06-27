@@ -11,6 +11,8 @@ QmlUiAccountModel::QmlUiAccountModel(QObject *parent)
     setDynamicSortFilter(true);
     setSourceModel(Client::coreAccountModel());
     settings.notify("LastAccount", this, SIGNAL(lastAccountIdChanged()));
+    if (count())
+        Q_EMIT countChanged();
 }
 
 
@@ -50,4 +52,17 @@ QHash<int, QByteArray> QmlUiAccountModel::roleNames() const
     roles.insert(PortRole, "port");
     roles.insert(UseSecureConnectionRole, "useSecureConnection");
     return roles;
+}
+
+QVariantMap
+QmlUiAccountModel::get(int row)
+{
+    QVariantMap res;
+    const QHash<int, QByteArray> roles = roleNames();
+    QHashIterator<int, QByteArray> i(roles);
+    while (i.hasNext()) {
+        i.next();
+        res.insert(i.value(), data(index(row, 0), i.key()));
+    }
+    return res;
 }

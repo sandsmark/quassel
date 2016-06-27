@@ -12,6 +12,47 @@ Page {
         }
         flickable: networksList
         clip: true
+        leadingActionBar {
+            actions: [
+                Action {
+                    iconName: 'help'
+                    text: qsTr('&Help')
+                    onTriggered: Qt.openUrlExternally(bugUrl)
+                },
+                Action {
+                    text: qsTr('Core Accounts')
+                    enabled: false
+                    visible: accountModel.count > 1
+                },
+                Action {
+                    iconName: 'account'
+                    text: accountModel.get(0).accountName
+                    visible: accountModel.count > 1
+                    onTriggered: accountModel.lastAccountId = accountModel.get(0).accountId
+                },
+                Action {
+                    iconName: 'account'
+                    text: accountModel.get(1).accountName
+                    visible: accountModel.count > 1
+                    onTriggered: accountModel.lastAccountId = accountModel.get(1).accountId
+                },
+                Action {
+                    iconName: 'account'
+                    text: accountModel.get(2).accountName
+                    visible: accountModel.count > 2
+                    onTriggered: accountModel.lastAccountId = accountModel.get(2).accountId
+                },
+                Action {
+                    iconName: 'list-add'
+                    text: qsTr('Add Core Account')
+                    onTriggered: adaptivePageLayout.addPageToNextColumn(bufferPage, Qt.resolvedUrl('AccountSettings.qml'), {
+                        accountModel: accountModel
+                    })
+                    visible: accountModel.count < 3
+                }
+            ]
+            numberOfSlots: 0
+        }
         trailingActionBar.actions: [
             Action {
                 id: lightTheme
@@ -27,12 +68,16 @@ Page {
         ]
     }
 
+    AccountModel {
+        id: accountModel
+    }
+
     UbuntuListView {
         id: networksList
         width: parent.width
         anchors {
             top: parent.top
-            bottom: coreSelector.top
+            bottom: parent.bottom
         }
         clip: true
         model: BufferModel { }
@@ -97,27 +142,6 @@ Page {
                     }
                 }
             }
-        }
-    }
-
-    OptionSelector {
-        id: coreSelector
-        anchors {
-            bottom: bufferPage.bottom
-            topMargin: units.gu(0.5)
-            bottomMargin: units.gu(0.5)
-        }
-        enabled: model.count > 1
-        width: parent.width
-        model: AccountModel { }
-        selectedIndex: model.lastAccountId
-        delegate: OptionSelectorDelegate {
-            text: accountName !== '' ? accountName : '#%1'.arg(accountId)
-            subText: '%1@%2:%3'.arg(user).arg(hostname).arg(port)
-            iconName: useSecureConnection ? 'channel-secure-symbolic' : 'channel-insecure-symbolic'
-            constrainImage: true
-            colourImage: true
-            onClicked: coreSelector.model.lastAccountId = accountId
         }
     }
 }
