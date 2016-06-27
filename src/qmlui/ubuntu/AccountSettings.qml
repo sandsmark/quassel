@@ -49,26 +49,42 @@ Page {
         clip: true
         ValueInput {
             id: accountNameInput
-            text: qsTr('Account Name:')
+            label: qsTr('Account Name:')
+            text: accountModel.get(accountId).accountName
             defaultValue: hostnameInput.value
         }
         ValueInput {
             id: hostnameInput
-            text: qsTr('Hostname:')
+            label: qsTr('Hostname:')
+            text: accountModel.get(accountId).hostname
         }
         ValueInput {
             id: portInput
-            text: qsTr('Port:')
+            label: qsTr('Port:')
+            text: accountModel.get(accountId).port
             defaultValue: 4242
         }
         ValueInput {
             id: userInput
-            text: qsTr('User:')
+            label: qsTr('User:')
+            text: accountModel.get(accountId).user
         }
         ValueInput {
             id: passwordInput
-            text: qsTr('Password:')
+            label: qsTr('Password:')
             echoMode: TextInput.Password
+            text: accountModel.get(accountId).password
+        }
+        Button {
+            x: parent.spacing
+            width: parent.width - parent.spacing * 2
+            iconName: 'delete'
+            color: theme.palette.normal.negative
+            onTriggered: {
+                accountModel.removeAccount(accountId)
+                adaptivePageLayout.removePages(settingsPage)
+            }
+            visible: accountId
         }
     }
 }
