@@ -2,7 +2,8 @@ import QtQuick 2.4
 import Ubuntu.Components 1.3
 
 Column {
-    property string text
+    property string label
+    property alias text: textField.text
     property var defaultValue: ''
     property string valueType: typeof defaultValue
     property alias echoMode: textField.echoMode
@@ -19,7 +20,7 @@ Column {
     spacing: units.gu(1)
 
     Label {
-        text: parent.text.replace(':', '')
+        text: label.replace(':', '')
     }
     Switch {
         id: option

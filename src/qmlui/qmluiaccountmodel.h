@@ -45,6 +45,12 @@ public:
         setAccountId(accountId.toInt());
     }
 
+    Q_INVOKABLE void removeAccount(int accountId) {
+        CoreAccountModel *model(dynamic_cast<CoreAccountModel *>(sourceModel()));
+        model->removeAccount(accountId);
+        model->save();
+    }
+
 Q_SIGNALS:
     void lastAccountIdChanged();
     void countChanged();
