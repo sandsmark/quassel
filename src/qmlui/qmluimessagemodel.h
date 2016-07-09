@@ -4,6 +4,8 @@
 #include "messagemodel.h"
 #include "client.h"
 #include "networkmodel.h"
+#include "clientbacklogmanager.h"
+#include "backlogsettings.h"
 
 #include <QSortFilterProxyModel>
 
@@ -85,6 +87,7 @@ private:
         _bufferId = bufferId;
         invalidateFilter();
         Q_EMIT bufferIdChanged();
+        Client::backlogManager()->requestBacklog(_bufferId, -1, -1, BacklogSettings().fixedBacklogAmount());
     }
 
     inline QString bufferName() const { return Client::networkModel()->bufferName(_bufferId); }
