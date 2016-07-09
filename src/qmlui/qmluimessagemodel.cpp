@@ -1,5 +1,7 @@
 #include "qmluimessagemodel.h"
 
+#include <QRegularExpression>
+
 #include "client.h"
 
 QmlUiMessageModel::QmlUiMessageModel(QObject *parent)
@@ -22,7 +24,85 @@ QVariant QmlUiMessageModel::data(const QModelIndex &index, int role) const
     case MessageModel::UserRole:
         return message.sender();
     case MessageModel::MessageRole:
-        return message.contents();
+        return stripFormatCodes(message.contents());
+    case StyledMessageRole:
+    {
+        // cf. src/uisupport/uistyle.cpp
+        QString text(message.contents()), nick(nickFromMask(message.sender()).replace('%', "%%"));
+        QString user(userFromMask(message.sender()).replace('%', "%%")), host(hostFromMask(message.sender()).replace('%', "%%")), buffer(bufferName().replace('%', "%%"));
+        switch(message.type()) {
+            case Message::Nick:
+                text = text == nick ? tr("You are now known as %DN%1%DN").arg(text) : tr("%DN%1%DN is now known as %DN%2%DN").arg(nick).arg(text);
+                break;
+            case Message::Mode:
+                text = nick.isEmpty() ? tr("User mode: %DM%1%DM").arg(text) : tr("Mode %DM%1%DM by %DN%2%DN").arg(text, nick);
+                break;
+            case Message::Join:
+                text = tr("%DN%1%DN %DH(%2@%3)%DH has joined %DC%4%DC").arg(nick, user, host, buffer);
+                break;
+            case Message::Part:
+                text = tr("%DN%1%DN %DH(%2@%3)%DH has left %DC%4%DC").arg(nick, user, host, buffer) + (text.isEmpty() ? "" : QString(" (%1)").arg(text));
+                break;
+            case Message::Quit:
+                if (text.isEmpty())
+                    text = tr("%DN%1%DN %DH(%2@%3)%DH has quit").arg(nick, user, host);
+                break;
+            case Message::Kick:
+            {
+                QString victim(text.section(" ", 0, 0)), kickMessage(text.section(" ", 1));
+                text = tr("%DN%1%DN has kicked %DN%2%DN from %DC%3%DC").arg(nick, victim, buffer) + (kickMessage.isEmpty() ? "" : QString(" (%1)").arg(kickMessage));
+                break;
+            }
+            case Message::Kill:
+            case Message::Server:
+            case Message::Info:
+            case Message::Error:
+                break;
+            case Message::DayChange:
+                text = tr("{Day changed to %1}").arg(message.timestamp().date().toString(Qt::DefaultLocaleLongDate));
+            case Message::Topic:
+                break;
+            case Message::NetsplitJoin:
+            case Message::NetsplitQuit:
+            {
+                QStringList users(text.split("#:#"));
+                QStringList servers(users.takeLast().split(" "));
+                const int maxNetsplitNicks = 15;
+                for (int i = 0; i < users.count() && i < maxNetsplitNicks; i++)
+                    users[i] = nickFromMask(users.at(i));
+                text = (message.type() == Message::NetsplitJoin ? tr("Netsplit between %DH%1%DH and %DH%2%DH ended. Users joined: ") : tr("Netsplit between %DH%1%DH and %DH%2%DH. Users quit: ")).arg(servers.at(0), servers.at(1));
+                if (users.count() <= maxNetsplitNicks)
+                    text.append(QString("%DN%1%DN").arg(users.join(", ")));
+                else
+                    text.append(tr("%DN%1%DN (%2 more)").arg(static_cast<QStringList>(users.mid(0, maxNetsplitNicks)).join(", ")).arg(users.count() - maxNetsplitNicks));
+            }
+            case Message::Invite:
+            case Message::Plain:
+            case Message::Notice:
+            case Message::Action:
+                break;
+        }
+        // Escape
+        text.replace(QRegExp("&(?!amp;)"), "&amp;");
+        text.replace(QRegExp("<"), "&lt;");
+        text.replace(QRegExp(">"), "&gt;");
+        text.replace(QRegExp("\""), "&quot;");
+        // Inline images: before
+        text.replace(QRegExp("(https?)(://)([^\\s]+)(\\.png|jpe?g|gif)"), "<img src=\"\\1-//\\3\\4\">");
+        // URLs
+        text.replace(QRegExp("(https?://[^\\s]+)"), "<a href=\"\\1\">\\1</a>");
+        // Inline images: after
+        text.replace(QRegExp("(https?)(-//)([^\\s]+)(\\.png|jpe?g|gif)"), "\\1://\\3\\4");
+        // UIStyle
+        text.replace("%%", "%");
+        text.replace(QRegularExpression("%D[NHCMU](.*?)%D[NHCMU]"), "<b>\\1</b>");
+        // mIRC
+        text.replace(QRegularExpression("\x02(.*?)\x02"), "<b>\\1</b>");
+        text.replace(QRegularExpression("\x1d(.*?)\x1d"), "<s>\\1</s>");
+        text.replace(QRegularExpression("\x1f(.*?)\x1f"), "<u>\\1</u>");
+        // Strip codes we don't handle
+        return stripFormatCodes(text);
+    }
     case MessageModel::TimestampRole:
         return message.timestamp();
     case PreviousSiblingRole:
@@ -46,7 +126,14 @@ QVariant QmlUiMessageModel::data(const QModelIndex &index, int role) const
     case SelfRole:
         return QVariant::fromValue<bool>(message.flags() & Message::Self);
     case ActionRole:
-        return QVariant::fromValue<bool>(message.type() == Message::Action);
+        switch (message.type()) {
+        case Message::Action:
+            return true;
+        case Message::Quit:
+            return !message.contents().isEmpty();
+        default:
+            return false;
+        }
     case MessageModel::MsgIdRole:
         return QVariant::fromValue<int>(message.msgId().toInt());
     default:
@@ -60,6 +147,7 @@ QHash<int, QByteArray> QmlUiMessageModel::roleNames() const
     QHash<int, QByteArray> roles;
     roles.insert(MessageModel::UserRole, "sender");
     roles.insert(MessageModel::MessageRole, "message");
+    roles.insert(StyledMessageRole, "styledMessage");
     roles.insert(MessageModel::TimestampRole, "timestamp");
     roles.insert(PreviousSiblingRole, "previousSibling");
     roles.insert(NextSiblingRole, "nextSibling");
