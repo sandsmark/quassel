@@ -35,7 +35,7 @@ Page {
             lastSeen: messagesModel.lastSeenMsgId == model.msgId
             previousSibling: model.previousSibling
             nextSibling: model.nextSibling
-            message: model.message
+            message: model.styledMessage
             timestamp: model.timestamp
             highlighted: model.highlight || model.self
             action: model.action
