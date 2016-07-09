@@ -3,13 +3,13 @@
 #include <QRegularExpression>
 
 #include "client.h"
+#include "buffersettings.h"
 
 QmlUiMessageModel::QmlUiMessageModel(QObject *parent)
     : QSortFilterProxyModel(parent),
     _networkId(0),
     _network(0)
 {
-    // _showMeta = true;
     setDynamicSortFilter(true);
     setFilterRole(MessageModel::BufferIdRole);
     setSourceModel(Client::messageModel());
@@ -163,7 +163,7 @@ bool QmlUiMessageModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourc
 {
     QModelIndex sourceIndex(sourceModel()->index(sourceRow, 0, sourceParent));
     Message message(sourceIndex.data(MessageModel::MessageRole).value<Message>());
-    if (message.type() > Message::Action && !_showMeta)
+    if (BufferSettings().messageFilter() & message.type())
         return false;
     return message.bufferId().toInt() == _bufferId;
 }
