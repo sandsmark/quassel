@@ -102,8 +102,6 @@ private:
     inline QString nick() const {
         return _network ? _network->myNick() : QString("");
     }
-    // TODO: Expose property
-    bool _showMeta;
 };
 
 #endif
