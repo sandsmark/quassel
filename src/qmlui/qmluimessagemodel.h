@@ -24,6 +24,7 @@ public:
     QmlUiMessageModel(QObject *parent = 0);
 
     enum {
+        StyledMessageRole,
         PreviousSiblingRole,
         NextSiblingRole,
         HighlightRole,

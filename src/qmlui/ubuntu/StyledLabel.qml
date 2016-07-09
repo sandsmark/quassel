@@ -12,15 +12,7 @@ FocusScope {
         id: label
         height: contentHeight
         width: parent.width
-        text: parent.text.replace(/[><&]/g, function(s) {
-                return {
-                    '>': '&gt;',
-                    '<': '&lt;',
-                    '&': '&amp;',
-                    '"': '&quot;',
-                }[s]
-            })
-            .replace(/(https?:\/\/[^\s]+)/g, '<a href="$1">$1</a>')
+        text: parent.text
         textFormat: Text.StyledText
         wrapMode: Text.Wrap
         elide: wrapMode == Text.NoWrap ? Text.ElideRight : Text.ElideNone
