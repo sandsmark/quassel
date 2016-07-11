@@ -4,6 +4,7 @@
 
 #include "client.h"
 #include "buffersettings.h"
+#include "clientignorelistmanager.h"
 
 QmlUiMessageModel::QmlUiMessageModel(QObject *parent)
     : QSortFilterProxyModel(parent),
@@ -11,8 +12,61 @@ QmlUiMessageModel::QmlUiMessageModel(QObject *parent)
     _network(0)
 {
     setDynamicSortFilter(true);
+    connect(this, SIGNAL(modelReset()), SIGNAL(countChanged()));
+    connect(this, SIGNAL(rowsRemoved(QModelIndex,int,int)), SIGNAL(countChanged()));
+    connect(this, SIGNAL(rowsInserted(QModelIndex,int,int)), SLOT(messagesInserted(const QModelIndex&,int,int)));
     setFilterRole(MessageModel::BufferIdRole);
+    connect(Client::backlogManager(), SIGNAL(updateProgress(int,int)), this, SIGNAL(backlogProgressChanged()));
     setSourceModel(Client::messageModel());
+}
+
+
+void QmlUiMessageModel::messagesInserted(const QModelIndex &parent, int start, int end)
+{
+    Q_UNUSED(parent);
+
+    for (int i = start; i <= end; i++) {
+        QModelIndex idx(index(i, MessageModel::ContentsColumn));
+        if (!idx.isValid()) {
+            qCritical() << "Invalid model index!";
+            continue;
+        }
+
+        Q_EMIT countChanged();
+
+        Message::Flags flags = (Message::Flags)idx.data(MessageModel::FlagsRole).toInt();
+        if (flags.testFlag(Message::Backlog)) {
+            Q_EMIT backlogReceived();
+            continue;
+        }
+        if (flags.testFlag(Message::Self))
+            continue;
+
+        BufferId bufId = idx.data(MessageModel::BufferIdRole).value<BufferId>();
+        BufferInfo::Type bufType = Client::networkModel()->bufferType(bufId);
+
+        // check if bufferId belongs to the shown chatlists
+        /* if (!(Client::bufferViewOverlay()->bufferIds().contains(bufId) ||
+              Client::bufferViewOverlay()->tempRemovedBufferIds().contains(bufId)))
+            continue; */
+
+        // check if it's the buffer currently displayed
+        if (bufId == _bufferId)
+            continue;
+
+        // only show notifications for higlights or queries
+        if (bufType != BufferInfo::QueryBuffer && !(flags & Message::Highlight))
+            continue;
+
+        // and of course: don't notify for ignored messages
+        if (Client::ignoreListManager() && Client::ignoreListManager()->match(idx.data(MessageModel::MessageRole).value<Message>(), Client::networkModel()->networkName(bufId)))
+            continue;
+
+        QModelIndex senderIdx (index(i, MessageModel::SenderColumn));
+        QString sender(senderIdx.data(MessageModel::EditRole).toString());
+        QString contents(idx.data(MessageModel::DisplayRole).toString());
+        Q_EMIT highlightReceived(sender, contents);
+    }
 }
 
 

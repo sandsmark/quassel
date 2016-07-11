@@ -29,7 +29,9 @@ Page {
         highlight: null
         model: MessageModel {
             id: messagesModel
+            onBacklogReceived: messagesList.positionViewAtEnd()
         }
+        Component.onCompleted: positionViewAtEnd()
         delegate: MessageItem {
             sender: model.sender
             lastSeen: messagesModel.lastSeenMsgId == model.msgId
