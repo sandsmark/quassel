@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=@APP_NAME@
+Comment=IRC Client
+Exec=@EXEC@
+Icon=@ICON@
+Terminal=false
+Type=Application
+X-Ubuntu-Touch=true
+
+
+

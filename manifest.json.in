@@ -1,0 +1,17 @@
+{
+    "name": "@APP_ID@",
+    "description": "IRC Client",
+    "architecture": "@CLICK_ARCH@",
+    "title": "@APP_NAME@",
+    "hooks": {
+        "QuasselIRC": {
+            "apparmor": "QuasselIRC.apparmor",
+            "desktop":  "QuasselIRC.desktop"
+        }
+    },
+    "version": "0.1",
+    "maintainer": "Christian Dywan <christian.dywan@canonical.com>",
+    "framework" : "ubuntu-sdk-15.04.6"
+}
+
+
