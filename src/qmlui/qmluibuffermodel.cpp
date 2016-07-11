@@ -5,6 +5,7 @@
 QmlUiBufferModel::QmlUiBufferModel(QObject *parent)
     : QSortFilterProxyModel(parent)
 {
+    connect(Client::instance(), SIGNAL(coreConnectionStateChanged(bool)), this, SIGNAL(connectedChanged()));
     setDynamicSortFilter(true);
     setSourceModel(Client::networkModel());
 }
@@ -50,4 +51,10 @@ QHash<int, QByteArray> QmlUiBufferModel::roleNames() const
     roles.insert(NetworkModel::NetworkIdRole, "network");
     roles.insert(NetworkModel::BufferIdRole, "buffers");
     return roles;
+}
+
+
+bool QmlUiBufferModel::connected() const
+{
+    return Client::isConnected();
 }

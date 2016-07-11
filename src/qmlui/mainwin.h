@@ -37,7 +37,6 @@ public:
     // void restoreStateFromSettings(UiSettings &);
 
 public slots:
-    void showStatusBarMessage(const QString &message);
     void nextBufferView();     //!< Activate the next bufferview
     void previousBufferView(); //!< Activate the previous bufferview
 

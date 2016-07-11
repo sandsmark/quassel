@@ -8,7 +8,7 @@ Page {
     header: PageHeader {
         title: qsTr('Quassel IRC')
         extension: HeaderExtensionLabel {
-            text: statusbarMessage
+            text: networksList.model.connected ? qsTr('Connected to core.') : qsTr('Not connected to core.')
         }
         flickable: networksList
         clip: true
