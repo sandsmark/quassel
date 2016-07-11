@@ -57,6 +57,9 @@ Page {
             visible: messageInput.activeFocus && shiftPressed
         }
     }
+    Scrollbar {
+        flickableItem: messagesList
+    }
 
     TextField {
         id: messageInput
