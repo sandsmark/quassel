@@ -56,7 +56,6 @@ protected slots:
 private slots:
     void addBufferView(int bufferViewConfigId);
     void removeBufferView(int bufferViewConfigId);
-    void messagesInserted(const QModelIndex &parent, int start, int end);
 
     void handleCoreConnectionError(const QString &errorMsg);
     void userAuthenticationRequired(CoreAccount *, bool *valid, const QString &errorMessage);

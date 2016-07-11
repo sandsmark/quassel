@@ -8,8 +8,6 @@
 
 #include "buffermodel.h"
 #include "bufferviewoverlay.h"
-#include "clientignorelistmanager.h"
-#include "clientbacklogmanager.h"
 #include "clienttransfermanager.h"
 #include "clientbufferviewmanager.h"
 #include "coreconnection.h"
@@ -40,8 +38,6 @@ void MainWin::init()
 {
     connect(Client::instance(), SIGNAL(networkCreated(NetworkId)), SLOT(clientNetworkCreated(NetworkId)));
     connect(Client::instance(), SIGNAL(networkRemoved(NetworkId)), SLOT(clientNetworkRemoved(NetworkId)));
-    connect(Client::messageModel(), SIGNAL(rowsInserted(const QModelIndex &, int, int)),
-        SLOT(messagesInserted(const QModelIndex &, int, int)));
 
     // TODO: connect(Client::coreConnection(), SIGNAL(startCoreSetup(QVariantList)), SLOT(showCoreConfigWizard(QVariantList)));
     connect(Client::coreConnection(), SIGNAL(connectionErrorPopup(QString)), SLOT(handleCoreConnectionError(QString)));
@@ -188,16 +184,7 @@ void MainWin::setConnectedState()
 
     if (isRemoteCoreOnly(action))
         action->setVisible(!Client::internalCore());
-    disconnect(Client::backlogManager(), SIGNAL(updateProgress(int, int)), _msgProcessorStatusWidget, SLOT(setProgress(int, int)));
     */
-
-    disconnect(Client::backlogManager(), SIGNAL(messagesRequested(const QString &)), this, SLOT(showStatusBarMessage(const QString &)));
-    disconnect(Client::backlogManager(), SIGNAL(messagesProcessed(const QString &)), this, SLOT(showStatusBarMessage(const QString &)));
-    if (!Client::internalCore()) {
-        // TODO: connect(Client::backlogManager(), SIGNAL(updateProgress(int, int)), _msgProcessorStatusWidget, SLOT(setProgress(int, int)));
-        connect(Client::backlogManager(), SIGNAL(messagesRequested(const QString &)), this, SLOT(showStatusBarMessage(const QString &)));
-        connect(Client::backlogManager(), SIGNAL(messagesProcessed(const QString &)), this, SLOT(showStatusBarMessage(const QString &)));
-    }
 
     showStatusBarMessage(tr("Connected to core."));
     updateIcon();
@@ -398,64 +385,6 @@ void MainWin::closeEvent(QCloseEvent *event)
     else */ {
         event->accept();
         quit();
-    }
-}
-
-
-void MainWin::messagesInserted(const QModelIndex &parent, int start, int end)
-{
-    Q_UNUSED(parent)
-
-    bool hasFocus = isActive();
-
-    for (int i = start; i <= end; i++) {
-        QModelIndex idx = Client::messageModel()->index(i, MessageModel::ContentsColumn);
-        if (!idx.isValid()) {
-            qDebug() << "MainWin::messagesInserted(): Invalid model index!";
-            continue;
-        }
-        Message::Flags flags = (Message::Flags)idx.data(MessageModel::FlagsRole).toInt();
-        if (flags.testFlag(Message::Backlog) || flags.testFlag(Message::Self))
-            continue;
-
-        BufferId bufId = idx.data(MessageModel::BufferIdRole).value<BufferId>();
-        BufferInfo::Type bufType = Client::networkModel()->bufferType(bufId);
-
-        // check if bufferId belongs to the shown chatlists
-        if (!(Client::bufferViewOverlay()->bufferIds().contains(bufId) ||
-              Client::bufferViewOverlay()->tempRemovedBufferIds().contains(bufId)))
-            continue;
-
-        // check if it's the buffer currently displayed
-        if (hasFocus && bufId == Client::bufferModel()->currentBuffer())
-            continue;
-
-        // only show notifications for higlights or queries
-        if (bufType != BufferInfo::QueryBuffer && !(flags & Message::Highlight))
-            continue;
-
-        // and of course: don't notify for ignored messages
-        if (Client::ignoreListManager() && Client::ignoreListManager()->match(idx.data(MessageModel::MessageRole).value<Message>(), Client::networkModel()->networkName(bufId)))
-            continue;
-
-        // seems like we have a legit notification candidate!
-        /* TODO:
-        QModelIndex senderIdx = Client::messageModel()->index(i, MessageModel::SenderColumn);
-        QString sender = senderIdx.data(MessageModel::EditRole).toString();
-        QString contents = idx.data(MessageModel::DisplayRole).toString();
-        AbstractNotificationBackend::NotificationType type;
-
-        if (bufType == BufferInfo::QueryBuffer && !hasFocus)
-            type = AbstractNotificationBackend::PrivMsg;
-        else if (bufType == BufferInfo::QueryBuffer && hasFocus)
-            type = AbstractNotificationBackend::PrivMsgFocused;
-        else if (flags & Message::Highlight && !hasFocus)
-            type = AbstractNotificationBackend::Highlight;
-        else
-            type = AbstractNotificationBackend::HighlightFocused;
-
-        QmlUi::instance()->invokeNotification(bufId, type, sender, contents);
-        */
     }
 }
 

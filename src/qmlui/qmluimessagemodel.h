@@ -21,6 +21,8 @@ class QmlUiMessageModel : public QSortFilterProxyModel
     Q_PROPERTY(int networkId READ networkId WRITE setNetworkId NOTIFY networkIdChanged)
     Q_PROPERTY(bool connected READ connected NOTIFY connectedChanged)
     Q_PROPERTY(QString nick READ nick NOTIFY nickChanged)
+    // QML ListModel
+    Q_PROPERTY(int count READ count NOTIFY countChanged)
 
 public:
     QmlUiMessageModel(QObject *parent = 0);
@@ -39,6 +41,8 @@ public:
     QHash<int, QByteArray>roleNames() const;
     // QSortFilterProxyModel
     bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const;
+    // QML ListModel
+    Q_INVOKABLE int count() { return rowCount(); }
 
 public Q_SLOTS:
     Q_INVOKABLE void userInput(const QString& message);
@@ -51,10 +55,15 @@ Q_SIGNALS:
     void networkIdChanged();
     void connectedChanged();
     void nickChanged();
+    void countChanged();
+    void backlogReceived();
+    void backlogProgressChanged();
+    void highlightReceived(const QString&,const QString&);
 
 protected:
 
 protected slots:
+    void messagesInserted(const QModelIndex &parent, int start, int end);
 
 private:
     NetworkId _networkId;
