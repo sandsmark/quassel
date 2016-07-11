@@ -104,6 +104,26 @@ if (STATIC OR WIN32 OR APPLE)
 endif()
 if (USE_QML)
     set(EMBED_DEFAULT ON)
+    # Do not remove this line, its required for the correct functionality of the Ubuntu-SDK
+    set(UBUNTU_MANIFEST_PATH "manifest.json.in" CACHE INTERNAL "Tells QtCreator location and name of the manifest file")
+    # Set install paths
+    set(CMAKE_INSTALL_PREFIX /)
+    set(DATA_DIR /)
+    # No op custom target for all not compiled files, so they show up in the QtCreator project tree
+    add_custom_target("${CMAKE_PROJECT_NAME}_ClickFiles" ALL SOURCES "${CMAKE_PROJECT_NAME}.apparmor" "manifest.json.in")
+    # Manifest generation variables
+    set(APP_NAME ${CMAKE_PROJECT_NAME})
+    set(APP_ID ${QUASSEL_CLIENT_NAME})
+    # This command figures out the target architecture for use in the manifest file
+    execute_process(
+      COMMAND dpkg-architecture -qDEB_HOST_ARCH
+      OUTPUT_VARIABLE CLICK_ARCH
+      OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+    configure_file(manifest.json.in ${CMAKE_CURRENT_BINARY_DIR}/manifest.json)
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/manifest.json
+            DESTINATION ${CMAKE_INSTALL_PREFIX})
+    install(FILES "${CMAKE_PROJECT_NAME}.apparmor" DESTINATION ${DATA_DIR})
 endif()
 
 cmake_dependent_option(EMBED_DATA "Embed icons and translations into the binaries instead of installing them" ${EMBED_DEFAULT}
