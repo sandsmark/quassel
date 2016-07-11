@@ -186,7 +186,6 @@ void MainWin::setConnectedState()
         action->setVisible(!Client::internalCore());
     */
 
-    showStatusBarMessage(tr("Connected to core."));
     updateIcon();
 
     if (Client::networkIds().isEmpty()) {
@@ -247,7 +246,6 @@ void MainWin::disconnectedFromCore()
 
 void MainWin::setDisconnectedState()
 {
-    showStatusBarMessage(tr("Not connected to core."));
     updateIcon();
 }
 
@@ -433,10 +431,4 @@ void MainWin::clientNetworkUpdated()
 void MainWin::clientNetworkRemoved(NetworkId id)
 {
     Q_UNUSED(id)
-}
-
-
-void MainWin::showStatusBarMessage(const QString &message)
-{
-    engine()->rootContext()->setContextProperty("statusbarMessage", message);
 }
