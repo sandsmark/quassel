@@ -15,13 +15,12 @@ class QmlUi : public AbstractUi
     Q_OBJECT
 
 public:
-    QmlUi();
     ~QmlUi();
 
     MessageModel *createMessageModel(QObject *parent);
     AbstractMessageProcessor *createMessageProcessor(QObject *parent);
 
-    inline static QmlUi *instance();
+    static QmlUi *instance();
 
 public slots:
     virtual void init();
@@ -39,11 +38,8 @@ protected:
 private slots:
 
 private:
-    static QmlUi *_instance;
+    QmlUi();
     MainWin *_mainWin;
 };
-
-
-QmlUi *QmlUi::instance() { return _instance ? _instance : new QmlUi(); }
 
 #endif

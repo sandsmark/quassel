@@ -19,9 +19,8 @@ QmlUiApplication::QmlUiApplication(int &argc, char **argv)
 bool QmlUiApplication::init()
 {
     if (Quassel::init()) {
-        QmlUi *gui = new QmlUi();
-        Client::init(gui);
-        gui->init();
+        Client::init(QmlUi::instance());
+        QmlUi::instance()->init();
         return true;
     }
     return false;
