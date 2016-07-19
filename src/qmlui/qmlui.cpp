@@ -1,5 +1,7 @@
 #include "qmlui.h"
 
+#include "clientbufferviewmanager.h"
+
 #include "buffermodel.h"
 #include "types.h"
 #include "util.h"
@@ -19,7 +21,8 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 
-QmlUi::QmlUi() : AbstractUi()
+QmlUi::QmlUi() : AbstractUi(),
+    m_bufferModel(nullptr)
 {
     Q_INIT_RESOURCE(qml);
 
@@ -46,14 +49,15 @@ void QmlUi::init()
     }
     QQmlEngine *engine = _mainWin->engine();
 #else
-    QQmlApplicationEngine *engine = new QQmlApplicationEngine;
+    QQmlApplicationEngine *engine = new QQmlApplicationEngine(this);
 #endif
+    m_bufferModel = new QmlUiBufferModel(this);
 
     qmlRegisterType<QmlUiAccountModel>("Quassel", 0, 1, "AccountModel");
-    qmlRegisterType<QmlUiBufferModel>("Quassel", 0, 1, "BufferModel");
     qmlRegisterType<QmlUiMessageModel>("Quassel", 0, 1, "MessageModel");
     engine->rootContext()->setContextProperty("bugUrl", QUASSEL_BUG_URL);
     engine->rootContext()->setContextProperty("CoreConnection", Client::coreConnection());
+    engine->rootContext()->setContextProperty("BufferModel", m_bufferModel);
 
 
 #ifdef USE_UBUNTU
@@ -88,6 +92,10 @@ QmlUi *QmlUi::instance()
 void QmlUi::connectedToCore()
 {
     emit coreConnected();
+
+    connect(Client::bufferViewManager(), SIGNAL(bufferViewConfigAdded(int)), this, SLOT(addBufferView(int)));
+    connect(Client::bufferViewManager(), SIGNAL(bufferViewConfigDeleted(int)), this, SLOT(removeBufferView(int)));
+    connect(Client::bufferViewManager(), SIGNAL(initDone()), this, SLOT(loadLayout()));
 }
 
 
@@ -95,4 +103,19 @@ void QmlUi::disconnectedFromCore()
 {
     emit coreDisconnected();
     AbstractUi::disconnectedFromCore();
+}
+
+void QmlUi::addBufferView(int bufferViewConfigId)
+{
+    m_bufferModel->setConfig(Client::bufferViewManager()->clientBufferViewConfig(bufferViewConfigId));
+}
+
+void QmlUi::removeBufferView(int)
+{
+
+}
+
+void QmlUi::loadLayout()
+{
+
 }

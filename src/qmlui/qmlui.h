@@ -7,6 +7,7 @@
 class MainWin;
 #endif
 class MessageModel;
+class QmlUiBufferModel;
 
 //! This class encapsulates Quassel's Qt-based GUI.
 /** This is basically a wrapper around QQuickView, which is necessary because we cannot derive MainWin
@@ -38,9 +39,14 @@ protected slots:
 protected:
 
 private slots:
+    void addBufferView(int bufferViewConfigId);
+    void removeBufferView(int);
+    void loadLayout();
 
 private:
     QmlUi();
+
+    QmlUiBufferModel *m_bufferModel;
 
 #ifdef USE_UBUNTU
     MainWin *_mainWin;
