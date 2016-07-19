@@ -23,8 +23,6 @@ public:
     MainWin(QWindow *parent = 0);
     virtual ~MainWin();
 
-    void init();
-
     void addBufferView(ClientBufferViewConfig *config);
     BufferView *activeBufferView() const;
 

@@ -1,22 +1,16 @@
 #include "mainwin.h"
 
-#include "../../version.h"
-
-#include <QQmlApplicationEngine>
-#include <QQmlContext>
 #include <QQmlError>
 
+#include "client.h"
 #include "buffermodel.h"
 #include "bufferviewoverlay.h"
 #include "clienttransfermanager.h"
 #include "clientbufferviewmanager.h"
 #include "coreconnection.h"
 
-#include "qmluiaccountmodel.h"
-#include "qmluibuffermodel.h"
-#include "qmluiapplication.h"
-#include "qmluimessagemodel.h"
-#include "qmluimessageprocessor.h"
+
+#include "qmlui.h"
 
 
 MainWin::MainWin(QWindow *parent)
@@ -24,18 +18,18 @@ MainWin::MainWin(QWindow *parent)
     _layoutLoaded(false),
     _activeBufferViewIndex(-1)
 {
-    Q_INIT_RESOURCE(qml);
-
     // FIXME: setAttribute(Qt::WA_DeleteOnClose, false); // we delete the mainwin manually
 
     // TODO: QApplication::setQuitOnLastWindowClosed(false);
 
     updateIcon();
-}
 
+    connect(this, SIGNAL(connectToCore(const QVariantMap &)), QmlUi::instance(), SIGNAL(connectToCore(const QVariantMap &)));
+    connect(this, SIGNAL(disconnectFromCore()), QmlUi::instance(), SIGNAL(disconnectFromCore()));
 
-void MainWin::init()
-{
+    connect(QmlUi::instance(), SIGNAL(coreDisconnected()), this, SLOT(disconnectedFromCore()));
+    connect(QmlUi::instance(), SIGNAL(coreConnected()), this, SLOT(connectedToCore()));
+
     connect(Client::instance(), SIGNAL(networkCreated(NetworkId)), SLOT(clientNetworkCreated(NetworkId)));
     connect(Client::instance(), SIGNAL(networkRemoved(NetworkId)), SLOT(clientNetworkRemoved(NetworkId)));
 
@@ -66,7 +60,6 @@ void MainWin::init()
         // FIXME: showCoreConnectionDlg();
     }
 }
-
 
 MainWin::~MainWin()
 {
