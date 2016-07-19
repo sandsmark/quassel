@@ -3,7 +3,9 @@
 
 #include "abstractui.h"
 
+#ifdef USE_UBUNTU
 class MainWin;
+#endif
 class MessageModel;
 
 //! This class encapsulates Quassel's Qt-based GUI.
@@ -39,6 +41,10 @@ private slots:
 
 private:
     QmlUi();
+
+#ifdef USE_UBUNTU
+    MainWin *_mainWin;
+#endif
 };
 
 #endif

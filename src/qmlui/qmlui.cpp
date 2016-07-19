@@ -24,19 +24,27 @@ QmlUi::QmlUi() : AbstractUi()
     Q_INIT_RESOURCE(qml);
 
     Quassel::loadTranslation(QLocale::system());
+#ifdef USE_UBUNTU
+    _mainWin = nullptr;
+#endif
 }
 
 
 QmlUi::~QmlUi()
 {
+#ifdef USE_UBUNTU
+    delete _mainWin;
+#endif
 }
 
 
 void QmlUi::init()
 {
 #ifdef USE_UBUNTU
-    MainWin *mainWin = new MainWin();
-    QQmlEngine *engine = mainWin->engine();
+    if (!_mainWin) {
+        _mainWin = new MainWin();
+    }
+    QQmlEngine *engine = _mainWin->engine();
 #else
     QQmlApplicationEngine *engine = new QQmlApplicationEngine;
 #endif
@@ -49,7 +57,7 @@ void QmlUi::init()
 
 
 #ifdef USE_UBUNTU
-    mainWin->setSource(QUrl(QStringLiteral("qrc:///qml/MainView.qml")));
+    _mainWin->setSource(QUrl(QStringLiteral("qrc:///qml/MainView.qml")));
 #else
     engine->load(QUrl(QStringLiteral("qrc:///qml/MainView.qml")));
 #endif
