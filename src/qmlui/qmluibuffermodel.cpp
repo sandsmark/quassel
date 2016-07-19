@@ -40,7 +40,7 @@ QVariant QmlUiBufferModel::data(const QModelIndex &index, int role) const
         return bufferModel;
     }
     default:
-        return QVariant();
+        return sourceModel()->data(sourceIndex, role);
     }
 }
 
@@ -50,6 +50,7 @@ QHash<int, QByteArray> QmlUiBufferModel::roleNames() const
     QHash<int, QByteArray> roles;
     roles.insert(NetworkModel::NetworkIdRole, "network");
     roles.insert(NetworkModel::BufferIdRole, "buffers");
+    roles.unite(QSortFilterProxyModel::roleNames());
     return roles;
 }
 
