@@ -46,16 +46,23 @@ include(QuasselMacros)
 
 # First, choose a Qt version. We support USE_QT4 and USE_QT5; if neither is set, prefer Qt4 for now
 option(USE_QT5 "Enable support for Qt5 (disables KDE integration)" OFF)
-option(USE_QML "Enable QML-based Ubuntu Touch GUI (implies Qt5)" OFF)
-if (USE_QT4) # takes precedence
-    set(USE_QT5 OFF)
-elseif (USE_QML)
+option(USE_QML "Enable QML-based GUI (implies Qt5)" OFF)
+option(USE_UBUNTU "Enable QML-based Ubuntu Touch GUI (implies Qt5)" OFF)
+
+if (USE_UBUNTU)
+    set(USE_QML ON)
+endif()
+
+if (USE_QML)
     set(USE_QT5 ON)
+elseif (USE_QT4)
+    set(USE_QT5 OFF)
 else()
     if (NOT USE_QT5)
         set(USE_QT4 ON)
     endif()
 endif()
+
 
 # Select the binaries to build
 option(WANT_CORE     "Build the core (server) binary"           ON)
