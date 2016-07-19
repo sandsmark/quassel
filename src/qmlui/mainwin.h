@@ -11,8 +11,8 @@ class BufferView;
 class ClientBufferViewConfig;
 class CoreAccount;
 class BufferViewDock;
-class BufferId;
-class NetworkId;
+struct BufferId;
+struct NetworkId;
 
 //!\brief The main window of Quassel's QmlUi.
 class MainWin
