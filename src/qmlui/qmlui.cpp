@@ -69,8 +69,11 @@ AbstractMessageProcessor *QmlUi::createMessageProcessor(QObject *parent)
 
 QmlUi *QmlUi::instance()
 {
-    static QmlUi qmlUiInstance;
-    return &qmlUiInstance;
+    static QmlUi *qmlUiInstance = nullptr;
+    if (!qmlUiInstance) {
+        qmlUiInstance = new QmlUi;
+    }
+    return qmlUiInstance;
 }
 
 
