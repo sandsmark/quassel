@@ -5,8 +5,11 @@
 #include "util.h"
 #include "../../version.h"
 
-#include "chatlinemodel.h"
+#ifdef USE_UBUNTU
 #include "mainwin.h"
+#endif
+
+#include "chatlinemodel.h"
 #include "qmluiaccountmodel.h"
 #include "qmluibuffermodel.h"
 #include "qmluiapplication.h"
@@ -31,8 +34,12 @@ QmlUi::~QmlUi()
 
 void QmlUi::init()
 {
+#ifdef USE_UBUNTU
     MainWin *mainWin = new MainWin();
     QQmlEngine *engine = mainWin->engine();
+#else
+    QQmlApplicationEngine *engine = new QQmlApplicationEngine;
+#endif
 
     qmlRegisterType<QmlUiAccountModel>("Quassel", 0, 1, "AccountModel");
     qmlRegisterType<QmlUiBufferModel>("Quassel", 0, 1, "BufferModel");
@@ -40,7 +47,12 @@ void QmlUi::init()
     engine->rootContext()->setContextProperty("bugUrl", QUASSEL_BUG_URL);
     engine->rootContext()->setContextProperty("CoreConnection", Client::coreConnection());
 
+
+#ifdef USE_UBUNTU
     mainWin->setSource(QUrl(QStringLiteral("qrc:///qml/MainView.qml")));
+#else
+    engine->load(QUrl(QStringLiteral("qrc:///qml/MainView.qml")));
+#endif
 }
 
 

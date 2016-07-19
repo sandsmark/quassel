@@ -1,7 +1,6 @@
 set(SOURCES
     chatlinemodel.cpp
     chatlinemodelitem.cpp
-    mainwin.cpp
     qmlui.cpp
     qmluiaccountmodel.cpp
     qmluiapplication.cpp
@@ -12,6 +11,7 @@ set(SOURCES
 if (USE_UBUNTU)
     qt_add_resources(SOURCES ubuntu/qml.qrc)
     add_subdirectory(ubuntu)
+    list(APPEND SOURCES mainwin.cpp)
 else()
     qt_add_resources(SOURCES controls/qml.qrc)
 endif()
