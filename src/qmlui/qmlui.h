@@ -39,7 +39,6 @@ private slots:
 
 private:
     QmlUi();
-    MainWin *_mainWin;
 };
 
 #endif
