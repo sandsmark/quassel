@@ -38,6 +38,7 @@ void QmlUi::init()
     qmlRegisterType<QmlUiBufferModel>("Quassel", 0, 1, "BufferModel");
     qmlRegisterType<QmlUiMessageModel>("Quassel", 0, 1, "MessageModel");
     engine->rootContext()->setContextProperty("bugUrl", QUASSEL_BUG_URL);
+    engine->rootContext()->setContextProperty("CoreConnection", Client::coreConnection());
 
     mainWin->setSource(QUrl(QStringLiteral("qrc:///qml/MainView.qml")));
 }
