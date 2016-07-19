@@ -26,24 +26,20 @@ QmlUi::QmlUi() : AbstractUi()
 
 QmlUi::~QmlUi()
 {
-    delete _mainWin;
-    _mainWin = 0;
 }
 
 
 void QmlUi::init()
 {
-    if (!_mainWin) {
-        _mainWin = new MainWin();
-    }
-    QQmlEngine *engine = _mainWin->engine();
+    MainWin *mainWin = new MainWin();
+    QQmlEngine *engine = mainWin->engine();
 
     qmlRegisterType<QmlUiAccountModel>("Quassel", 0, 1, "AccountModel");
     qmlRegisterType<QmlUiBufferModel>("Quassel", 0, 1, "BufferModel");
     qmlRegisterType<QmlUiMessageModel>("Quassel", 0, 1, "MessageModel");
     engine->rootContext()->setContextProperty("bugUrl", QUASSEL_BUG_URL);
 
-    _mainWin->setSource(QUrl(QStringLiteral("qrc:///qml/MainView.qml")));
+    mainWin->setSource(QUrl(QStringLiteral("qrc:///qml/MainView.qml")));
 }
 
 
