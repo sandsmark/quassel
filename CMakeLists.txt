@@ -52,6 +52,7 @@ option(USE_UBUNTU "Enable QML-based Ubuntu Touch GUI (implies Qt5)" OFF)
 
 if (USE_UBUNTU)
     set(USE_QML ON)
+    add_definitions(-DUSE_UBUNTU)
 endif()
 
 if (USE_QT5) # takes precedence
@@ -127,7 +128,7 @@ set(EMBED_DEFAULT OFF)
 if (STATIC OR WIN32 OR APPLE)
     set(EMBED_DEFAULT ON)
 endif()
-if (USE_QML)
+if (USE_UBUNTU)
     set(EMBED_DEFAULT ON)
     # Do not remove this line, its required for the correct functionality of the Ubuntu-SDK
     set(UBUNTU_MANIFEST_PATH "manifest.json.in" CACHE INTERNAL "Tells QtCreator location and name of the manifest file")
