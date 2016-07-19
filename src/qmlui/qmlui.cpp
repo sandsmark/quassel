@@ -8,6 +8,8 @@
 #include "mainwin.h"
 #include "qmluimessageprocessor.h"
 
+#include <QQmlApplicationEngine>
+
 QmlUi *QmlUi::_instance = 0;
 MainWin *QmlUi::_mainWin = 0;
 
@@ -38,6 +40,15 @@ QmlUi::~QmlUi()
 
 void QmlUi::init()
 {
+    QQmlEngine *engine = _mainWin->engine();
+
+    qmlRegisterType<QmlUiAccountModel>("Quassel", 0, 1, "AccountModel");
+    qmlRegisterType<QmlUiBufferModel>("Quassel", 0, 1, "BufferModel");
+    qmlRegisterType<QmlUiMessageModel>("Quassel", 0, 1, "MessageModel");
+    engine->rootContext()->setContextProperty("bugUrl", QUASSEL_BUG_URL);
+
+    _mainWin->setSource(QUrl(QStringLiteral("qrc:///qml/MainView.qml")));
+
     _mainWin->init();
 }
 

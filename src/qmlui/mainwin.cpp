@@ -53,16 +53,6 @@ void MainWin::init()
 
     setDisconnectedState(); // Disable menus and stuff
 
-    qmlRegisterType<QmlUiAccountModel>("Quassel", 0, 1, "AccountModel");
-    qmlRegisterType<QmlUiBufferModel>("Quassel", 0, 1, "BufferModel");
-    qmlRegisterType<QmlUiMessageModel>("Quassel", 0, 1, "MessageModel");
-
-    engine()->rootContext()->setContextProperty("bugUrl", QUASSEL_BUG_URL);
-
-    setSource(QUrl(QStringLiteral("qrc:///qml/MainView.qml")));
-    if (errors().count() > 0) {
-        return;
-    }
     setResizeMode(QQuickView::SizeRootObjectToView);
     showNormal();
 
