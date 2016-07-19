@@ -1,8 +1,8 @@
 #include "qmluiapplication.h"
 
 #include "qmlui.h"
-#include "mainwin.h"
 #include "client.h"
+#include <QCoreApplication>
 
 QmlUiApplication::QmlUiApplication(int &argc, char **argv)
     : QGuiApplication(argc, argv),
@@ -22,8 +22,7 @@ bool QmlUiApplication::init()
         QmlUi *gui = new QmlUi();
         Client::init(gui);
         gui->init();
-        // If initialization goes wrong, the window won't show
-        return QmlUi::mainWindow()->isVisible();
+        return true;
     }
     return false;
 }
@@ -35,5 +34,5 @@ QmlUiApplication::~QmlUiApplication()
 
 void QmlUiApplication::quit()
 {
-    QmlUi::mainWindow()->quit();
+    qApp->quit();
 }

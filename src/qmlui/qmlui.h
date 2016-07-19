@@ -22,10 +22,13 @@ public:
     AbstractMessageProcessor *createMessageProcessor(QObject *parent);
 
     inline static QmlUi *instance();
-    inline static MainWin *mainWindow();
 
 public slots:
     virtual void init();
+
+signals:
+    void coreConnected();
+    void coreDisconnected();
 
 protected slots:
     void connectedToCore();
@@ -37,11 +40,10 @@ private slots:
 
 private:
     static QmlUi *_instance;
-    static MainWin *_mainWin;
+    MainWin *_mainWin;
 };
 
 
 QmlUi *QmlUi::instance() { return _instance ? _instance : new QmlUi(); }
-MainWin *QmlUi::mainWindow() { return _mainWin; }
 
 #endif
