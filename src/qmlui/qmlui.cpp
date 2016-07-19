@@ -3,18 +3,25 @@
 #include "buffermodel.h"
 #include "types.h"
 #include "util.h"
+#include "../../version.h"
 
 #include "chatlinemodel.h"
 #include "mainwin.h"
+#include "qmluiaccountmodel.h"
+#include "qmluibuffermodel.h"
+#include "qmluiapplication.h"
+#include "qmluimessagemodel.h"
 #include "qmluimessageprocessor.h"
 
 #include <QQmlApplicationEngine>
+#include <QQmlContext>
 
 QmlUi *QmlUi::_instance = 0;
-MainWin *QmlUi::_mainWin = 0;
 
 QmlUi::QmlUi() : AbstractUi()
 {
+    Q_INIT_RESOURCE(qml);
+
     if (_instance != 0) {
         qWarning() << "QmlUi has been instantiated again!";
         return;
@@ -22,11 +29,6 @@ QmlUi::QmlUi() : AbstractUi()
     _instance = this;
 
     Quassel::loadTranslation(QLocale::system());
-
-    _mainWin = new MainWin();
-
-    connect(_mainWin, SIGNAL(connectToCore(const QVariantMap &)), this, SIGNAL(connectToCore(const QVariantMap &)));
-    connect(_mainWin, SIGNAL(disconnectFromCore()), this, SIGNAL(disconnectFromCore()));
 }
 
 
@@ -40,6 +42,9 @@ QmlUi::~QmlUi()
 
 void QmlUi::init()
 {
+    if (!_mainWin) {
+        _mainWin = new MainWin();
+    }
     QQmlEngine *engine = _mainWin->engine();
 
     qmlRegisterType<QmlUiAccountModel>("Quassel", 0, 1, "AccountModel");
@@ -48,8 +53,6 @@ void QmlUi::init()
     engine->rootContext()->setContextProperty("bugUrl", QUASSEL_BUG_URL);
 
     _mainWin->setSource(QUrl(QStringLiteral("qrc:///qml/MainView.qml")));
-
-    _mainWin->init();
 }
 
 
@@ -67,12 +70,12 @@ AbstractMessageProcessor *QmlUi::createMessageProcessor(QObject *parent)
 
 void QmlUi::connectedToCore()
 {
-    _mainWin->connectedToCore();
+    emit coreConnected();
 }
 
 
 void QmlUi::disconnectedFromCore()
 {
-    _mainWin->disconnectedFromCore();
+    emit coreDisconnected();
     AbstractUi::disconnectedFromCore();
 }
