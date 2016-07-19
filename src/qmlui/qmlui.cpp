@@ -16,17 +16,9 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 
-QmlUi *QmlUi::_instance = 0;
-
 QmlUi::QmlUi() : AbstractUi()
 {
     Q_INIT_RESOURCE(qml);
-
-    if (_instance != 0) {
-        qWarning() << "QmlUi has been instantiated again!";
-        return;
-    }
-    _instance = this;
 
     Quassel::loadTranslation(QLocale::system());
 }
@@ -36,7 +28,6 @@ QmlUi::~QmlUi()
 {
     delete _mainWin;
     _mainWin = 0;
-    _instance = 0;
 }
 
 
@@ -65,6 +56,12 @@ MessageModel *QmlUi::createMessageModel(QObject *parent)
 AbstractMessageProcessor *QmlUi::createMessageProcessor(QObject *parent)
 {
     return new QmlUiMessageProcessor(parent);
+}
+
+QmlUi *QmlUi::instance()
+{
+    static QmlUi qmlUiInstance;
+    return &qmlUiInstance;
 }
 
 
