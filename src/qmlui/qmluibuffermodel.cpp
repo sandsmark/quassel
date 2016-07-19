@@ -54,6 +54,17 @@ QHash<int, QByteArray> QmlUiBufferModel::roleNames() const
     return roles;
 }
 
+bool QmlUiBufferModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
+{
+    QModelIndex child = sourceModel()->index(source_row, 0, source_parent);
+    NetworkModel::ItemType childType = (NetworkModel::ItemType)sourceModel()->data(child, NetworkModel::ItemTypeRole).toInt();
+    if (childType == NetworkModel::BufferItemType || childType == NetworkModel::NetworkItemType) {
+        return sourceModel()->data(child, NetworkModel::ItemActiveRole).toBool();
+    }
+
+    return false;
+}
+
 
 bool QmlUiBufferModel::connected() const
 {

@@ -19,6 +19,7 @@ public:
 Q_SIGNALS:
     void connectedChanged();
 protected:
+    bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const;
 
 protected slots:
 
