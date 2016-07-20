@@ -61,11 +61,14 @@ QHash<int, QByteArray> QmlUiBufferModel::roleNames() const
 
 void QmlUiBufferModel::setConfig(ClientBufferViewConfig *config)
 {
-    qDebug() << "RESETTING";
-//    beginResetModel();
     m_config = config;
     connect(m_config, SIGNAL(initDone()), this, SLOT(invalidate()));
-//    endResetModel();
+}
+
+int QmlUiBufferModel::getBufferId(const QModelIndex &index)
+{
+    QModelIndex sourceIndex(mapToSource(index));
+    return BufferId(sourceIndex.data(NetworkModel::BufferIdRole).value<BufferId>()).toInt();
 }
 
 bool QmlUiBufferModel::lessThan(const QModelIndex &source_left, const QModelIndex &source_right) const

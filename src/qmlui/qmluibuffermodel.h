@@ -20,6 +20,9 @@ public:
 
     void setConfig(ClientBufferViewConfig *config);
 
+public slots:
+    int getBufferId(const QModelIndex &index);
+
 Q_SIGNALS:
     void connectedChanged();
 protected:
