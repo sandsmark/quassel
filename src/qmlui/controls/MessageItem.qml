@@ -24,16 +24,14 @@ Item {
         color: Qt.rgba(1, 1, 1, 0.3)
 //        color: highlighted ? "orange" : "transparent"
 
-        Grid {
+        Row {
             id: column
             anchors.centerIn: parent
             width: parent.width - padding * 2
             spacing: padding
-            columns: 3
-            rows: 1
 
             Label {
-                text: Qt.formatDateTime(timestamp)
+                text: Qt.formatDateTime(timestamp, "hh:mm")
                 opacity: previousSibling ? 0 : 1
             }
 

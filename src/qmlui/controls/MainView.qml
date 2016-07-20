@@ -2,6 +2,7 @@ import QtQuick 2.4
 import QtQml 2.2
 import QtQuick.Controls 1.4
 import QtQuick.Layouts 1.3
+import QtQuick.Controls.Styles 1.4
 import Quassel 0.1
 
 ApplicationWindow {
@@ -57,12 +58,16 @@ ApplicationWindow {
                 messagesView.bufferId = BufferModel.getBufferId(index)
             }
 
-            onClicked: selectBuffer(index)
             onActivated: selectBuffer(index)
 
             TableViewColumn {
                 title: "Buffers"
                 role: "display"
+            }
+
+            style: TreeViewStyle {
+                activateItemOnSingleClick: true
+                alternateBackgroundColor: backgroundColor
             }
         }
 
