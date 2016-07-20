@@ -57,6 +57,7 @@ void QmlUi::init()
     qmlRegisterType<QmlUiMessageModel>("Quassel", 0, 1, "MessageModel");
     engine->rootContext()->setContextProperty("bugUrl", QUASSEL_BUG_URL);
     engine->rootContext()->setContextProperty("CoreConnection", Client::coreConnection());
+    engine->rootContext()->setContextProperty("BacklogManager", Client::backlogManager());
     engine->rootContext()->setContextProperty("BufferModel", m_bufferModel);
 
 
