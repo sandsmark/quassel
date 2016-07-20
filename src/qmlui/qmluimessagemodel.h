@@ -97,6 +97,7 @@ private:
         invalidateFilter();
         Q_EMIT bufferIdChanged();
         Client::backlogManager()->requestBacklog(_bufferId, -1, -1, BacklogSettings().fixedBacklogAmount());
+        setNetworkId(Client::networkModel()->networkId(bufferId).toInt());
     }
 
     inline QString bufferName() const { return Client::networkModel()->bufferName(_bufferId); }
