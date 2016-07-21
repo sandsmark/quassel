@@ -53,6 +53,7 @@ public:
         Synchronizing,
         Synchronized
     };
+    Q_ENUM(ConnectionState)
 
     CoreConnection(QObject *parent = 0);
 
@@ -172,8 +173,6 @@ private:
     friend class CoreConfigWizard;
 };
 
-
-Q_DECLARE_METATYPE(CoreConnection::ConnectionState)
 
 // Inlines
 inline int CoreConnection::progressMinimum() const { return _progressMinimum; }
