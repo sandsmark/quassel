@@ -51,6 +51,11 @@ public:
         model->save();
     }
 
+    Q_INVOKABLE int indexOfLastAccount() {
+        const QList<AccountId> accounts = Client::coreAccountModel()->accountIds();
+        return accounts.indexOf(settings.lastAccount());
+    }
+
 Q_SIGNALS:
     void lastAccountIdChanged();
     void countChanged();
