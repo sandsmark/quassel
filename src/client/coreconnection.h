@@ -45,6 +45,8 @@ class CoreConnection : public QObject
 {
     Q_OBJECT
 
+    Q_PROPERTY(ConnectionState state READ state NOTIFY stateChanged)
+
 public:
     enum ConnectionState {
         Disconnected,
@@ -53,6 +55,7 @@ public:
         Synchronizing,
         Synchronized
     };
+    Q_ENUM(ConnectionState)
 
     CoreConnection(QObject *parent = 0);
 
@@ -83,7 +86,7 @@ public slots:
     void setupCore(const Protocol::SetupData &setupData);
 
 signals:
-    void stateChanged(CoreConnection::ConnectionState);
+    void stateChanged(CoreConnection::ConnectionState newState);
     void encrypted(bool isEncrypted = true);
     void synchronized();
     void lagUpdated(int msecs);
@@ -172,8 +175,6 @@ private:
     friend class CoreConfigWizard;
 };
 
-
-Q_DECLARE_METATYPE(CoreConnection::ConnectionState)
 
 // Inlines
 inline int CoreConnection::progressMinimum() const { return _progressMinimum; }

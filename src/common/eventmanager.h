@@ -32,7 +32,6 @@ class EventManager : public QObject
 {
     Q_OBJECT
     Q_FLAGS(EventFlag EventFlags)
-    Q_ENUMS(EventType)
 
 public :
 
@@ -119,6 +118,7 @@ public :
 
         KeyEvent                    = 0x00060000
     };
+    Q_ENUM(EventType)
 
     EventManager(QObject *parent = 0);
 

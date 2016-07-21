@@ -29,17 +29,20 @@ QVariant QmlUiBufferModel::data(const QModelIndex &index, int role) const
     {
         NetworkId networkId(sourceIndex.data(NetworkModel::NetworkIdRole).value<NetworkId>());
         QVariantList bufferModel;
-        QModelIndex child(sourceIndex.child(0, sourceIndex.column()));
+        QModelIndex child(index.child(0, index.column()));
         while (child.isValid()) {
-            BufferId bufferId(child.data(role).value<BufferId>());
-            QString bufferName(dynamic_cast<NetworkModel *>(sourceModel())->bufferName(bufferId));
-            int activity(child.data(NetworkModel::BufferActivityRole).value<int>());
-            QVariantMap map;
-            map.insert(QStringLiteral("networkId"), networkId.toInt());
-            map.insert(QStringLiteral("bufferId"), bufferId.toInt());
-            map.insert(QStringLiteral("bufferName"), bufferName);
-            map.insert(QStringLiteral("activity"), activity);
-            bufferModel.append(map);
+            QModelIndex sourceChild(mapToSource(child));
+//            if (filterAcceptsRow(child.row(), sourceIndex)) {
+                BufferId bufferId(sourceChild.data(role).value<BufferId>());
+                QString bufferName(dynamic_cast<NetworkModel *>(sourceModel())->bufferName(bufferId));
+                int activity(sourceChild.data(NetworkModel::BufferActivityRole).value<int>());
+                QVariantMap map;
+                map.insert(QStringLiteral("networkId"), networkId.toInt());
+                map.insert(QStringLiteral("bufferId"), bufferId.toInt());
+                map.insert(QStringLiteral("bufferName"), bufferName);
+                map.insert(QStringLiteral("activity"), activity);
+                bufferModel.append(map);
+//            }
             child = child.sibling(child.row() + 1, child.column());
         }
         return bufferModel;

@@ -22,7 +22,7 @@ include_directories(${CMAKE_SOURCE_DIR}/src/common
 )
 
 add_library(mod_qmlui STATIC ${SOURCES} ${SPSRC} ${UI})
-qt_use_modules(mod_qmlui Core Network Qml Quick)
+qt_use_modules(mod_qmlui Core Network Qml Quick QuickControls2)
 target_link_libraries(mod_qmlui mod_client mod_common)
 
 

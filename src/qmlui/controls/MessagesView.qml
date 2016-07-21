@@ -1,5 +1,5 @@
 import QtQuick 2.4
-import QtQuick.Controls 1.4
+import QtQuick.Controls 2.0
 import Quassel 0.1
 
 Item {
@@ -40,17 +40,17 @@ Item {
 //        Component.onCompleted: messagesList.positionViewAtRow(rowCount -1, ListView.Contain)
 //    }
 
-    ScrollView {
-        anchors {
-            top: parent.top
-            bottom: messageInput.top
-            left: parent.left
-            right: parent.right
-        }
 
+//    Frame {
         ListView {
             id: messagesList
             clip: true
+            anchors {
+                top: parent.top
+                bottom: messageInput.top
+                left: parent.left
+                right: parent.right
+            }
             highlight: null
             model: MessageModel {
                 id: messagesModel
@@ -73,7 +73,7 @@ Item {
                 action: model.action
             }
         }
-    }
+//    }
 
     Label {
         id: nickLabel

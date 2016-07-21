@@ -51,6 +51,11 @@ public:
         model->save();
     }
 
+    Q_INVOKABLE int indexOfLastAccount() {
+        const QList<AccountId> accounts = Client::coreAccountModel()->accountIds();
+        return accounts.indexOf(settings.lastAccount());
+    }
+
 Q_SIGNALS:
     void lastAccountIdChanged();
     void countChanged();
@@ -66,7 +71,7 @@ protected slots:
 
 private:
     CoreAccountSettings settings;
-    inline int lastAccountId() {
+    inline int lastAccountId() const {
         CoreAccount account(Client::currentCoreAccount());
         return account.isValid() ? account.accountId().toInt() : -1;
     }

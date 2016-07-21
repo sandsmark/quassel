@@ -52,13 +52,13 @@ public:
         Failed,
         Rejected
     };
-    Q_ENUMS(State)
+    Q_ENUM(State)
 
     enum class Direction {
         Send,
         Receive
     };
-    Q_ENUMS(Direction)
+    Q_ENUM(Direction)
 
     Transfer(const QUuid &uuid, QObject *parent = 0); // for creating a syncable object client-side
     Transfer(Direction direction, const QString &nick, const QString &fileName, const QHostAddress &address, quint16 port, quint64 size = 0, QObject *parent = 0);

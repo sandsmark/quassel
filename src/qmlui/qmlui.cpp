@@ -20,6 +20,7 @@
 
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
+#include <QQuickStyle>
 
 QmlUi::QmlUi() : AbstractUi(),
     m_bufferModel(nullptr)
@@ -55,9 +56,13 @@ void QmlUi::init()
 
     qmlRegisterType<QmlUiAccountModel>("Quassel", 0, 1, "AccountModel");
     qmlRegisterType<QmlUiMessageModel>("Quassel", 0, 1, "MessageModel");
+    qmlRegisterSingletonType<CoreConnection>("Quassel", 0, 1, "CoreConnection", [](QQmlEngine *, QJSEngine*) -> QObject* {
+        return Client::coreConnection();
+    });
+    qmlRegisterSingletonType<BacklogManager>("Quassel", 0, 1, "BacklogManager", [](QQmlEngine *, QJSEngine*) -> QObject* {
+        return Client::backlogManager();
+    });
     engine->rootContext()->setContextProperty("bugUrl", QUASSEL_BUG_URL);
-    engine->rootContext()->setContextProperty("CoreConnection", Client::coreConnection());
-    engine->rootContext()->setContextProperty("BacklogManager", Client::backlogManager());
     engine->rootContext()->setContextProperty("BufferModel", m_bufferModel);
 
 
