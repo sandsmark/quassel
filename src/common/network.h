@@ -51,7 +51,6 @@ class Network : public SyncableObject
 {
     SYNCABLE_OBJECT
     Q_OBJECT
-    Q_ENUMS(ConnectionState)
 
     Q_PROPERTY(QString networkName READ networkName WRITE setNetworkName)
     Q_PROPERTY(QString currentServer READ currentServer WRITE setCurrentServer)
@@ -92,6 +91,7 @@ public :
         Reconnecting,
         Disconnecting
     };
+    Q_ENUM(ConnectionState)
 
     // see:
     //  http://www.irc.org/tech_docs/005.html

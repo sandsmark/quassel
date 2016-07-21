@@ -32,11 +32,10 @@ class EventManager : public QObject
 {
     Q_OBJECT
     Q_FLAGS(EventFlag EventFlags)
-    Q_ENUMS(EventType)
 
 public :
 
-        enum RegistrationMode {
+    enum RegistrationMode {
         Prepend,
         Append
     };
@@ -120,6 +119,7 @@ public :
 
         KeyEvent                    = 0x00060000
     };
+    Q_ENUM(EventType)
 
     EventManager(QObject *parent = 0);
 
