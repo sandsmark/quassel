@@ -67,6 +67,7 @@ void ClientAuthHandler::connectToCore()
             emit handleNoSslInClient(&accepted);
             if (!accepted) {
                 emit errorMessage(tr("Unencrypted connection canceled"));
+                emit disconnected();
                 return;
             }
             s.setAccountValue("ShowNoClientSslWarning", false);
