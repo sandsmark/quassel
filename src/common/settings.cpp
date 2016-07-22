@@ -32,7 +32,7 @@ const int VERSION_MINOR_INITIAL = 1; /// Initial settings version for compatible
 QHash<QString, QVariant> Settings::settingsCache;
 QHash<QString, SettingsChangeNotifier *> Settings::settingsChangeNotifier;
 
-#ifdef Q_OS_MAC
+#if defined(Q_OS_MAC) || defined(Q_OS_ANDROID)
 #  define create_qsettings QSettings s(QCoreApplication::organizationDomain(), appName)
 #else
 #  define create_qsettings QSettings s(fileName(), format())
