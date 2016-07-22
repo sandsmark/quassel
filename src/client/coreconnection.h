@@ -108,7 +108,7 @@ signals:
     void connectToInternalCore(InternalPeer *connection);
 
     // These signals MUST be handled synchronously!
-    void userAuthenticationRequired(CoreAccount *, bool *valid, const QString &errorMessage = QString());
+    void userAuthenticationRequired(CoreAccount *account, bool *valid, const QString &errorMessage = QString());
     void handleNoSslInClient(bool *accepted);
     void handleNoSslInCore(bool *accepted);
 #ifdef HAVE_SSL

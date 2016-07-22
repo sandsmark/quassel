@@ -51,8 +51,8 @@ public slots:
 
 signals:
     void messagesReceived(BufferId bufferId, int count) const;
-    void messagesRequested(const QString &) const;
-    void messagesProcessed(const QString &) const;
+    void messagesRequested(const QString &message) const;
+    void messagesProcessed(const QString &message) const;
 
     void updateProgress(int received, int total);
 
