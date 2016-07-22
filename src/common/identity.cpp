@@ -149,7 +149,7 @@ QString Identity::defaultRealName()
 #ifdef Q_OS_MAC
     return CFStringToQString(CSCopyUserName(false));
 
-#elif defined(Q_OS_UNIX)
+#elif defined(Q_OS_UNIX) && !defined(Q_OS_ANDROID)
     QString realName;
     struct passwd *pwd = getpwuid(getuid());
     if (pwd)
@@ -166,6 +166,7 @@ QString Identity::defaultRealName()
         return tcharToQString(infoBuf);
     else
         return generalDefault;
+
 #else
     return generalDefault;
 #endif
