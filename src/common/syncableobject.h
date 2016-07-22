@@ -31,9 +31,12 @@
 #define SYNCABLE_OBJECT static const int _classNameOffset__;
 #define INIT_SYNCABLE_OBJECT(x) const int x ::_classNameOffset__ = QByteArray(staticMetaObject.className()).length() + 2;
 
-#ifdef Q_CC_MSVC
+#if defined(Q_CC_MSVC)
 #    define SYNC(...) sync_call__(SignalProxy::Server, (__FUNCTION__ + _classNameOffset__), __VA_ARGS__);
 #    define REQUEST(...) sync_call__(SignalProxy::Client, (__FUNCTION__ + _classNameOffset__), __VA_ARGS__);
+#elif defined(Q_OS_ANDROID)
+#    define SYNC(...) sync_call__(SignalProxy::Server, __FUNCTION__, __VA_ARGS__);
+#    define REQUEST(...) sync_call__(SignalProxy::Client, __FUNCTION__, __VA_ARGS__);
 #else
 #    define SYNC(...) sync_call__(SignalProxy::Server, __func__, __VA_ARGS__);
 #    define REQUEST(...) sync_call__(SignalProxy::Client, __func__, __VA_ARGS__);
