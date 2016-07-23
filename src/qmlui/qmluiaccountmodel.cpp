@@ -70,13 +70,10 @@ QmlUiAccountModel::get(int row)
 
 bool QmlUiAccountModel::createOrUpdateAccount(QVariantMap accountMap)
 {
-    for (const QByteArray roleName : roleNames()) {
-        if (roleName == "accountId") {
-            continue;
-        }
-
+    for (const QByteArray roleName : {"AccountName", "HostName", "Port", "User", "Password"}) {
         if (!accountMap.contains(roleName) || accountMap[roleName] == "") {
-            qWarning() << "Account map missing" << roleName;
+            emit error("Account info missing " + roleName);
+            qWarning() << "Account info missing" << roleName;
             return false;
         }
     }

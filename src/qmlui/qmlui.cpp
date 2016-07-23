@@ -21,6 +21,7 @@
 
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
+#include <QQuickStyle>
 
 QmlUi::QmlUi() : AbstractUi(),
     m_bufferModel(nullptr)

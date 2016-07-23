@@ -235,6 +235,13 @@ if (USE_QT5)
     )
 
     if (USE_QML)
+        find_package(Qt5QuickControls2 ${QT_MIN_VERSION} QUIET)
+        set_package_properties(Qt5QuickControls2 PROPERTIES TYPE REQUIRED
+            DESCRIPTION "the qqc2 module for Qt5"
+            )
+        if (NOT Qt5QuickControls2_FOUND)
+            message(FATAL_ERROR "QQDDCSDC@")
+        endif()
         find_package(Qt5Qml ${QT_MIN_VERSION} QUIET)
         set_package_properties(Qt5Qml PROPERTIES TYPE REQUIRED
             DESCRIPTION "the QML module for Qt5"

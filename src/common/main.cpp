@@ -184,6 +184,7 @@ int main(int argc, char **argv)
 #  if defined BUILD_CORE
     CoreApplication app(argc, argv);
 #  elif defined HAVE_QML && !defined(BUILD_MONO)
+    QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QmlUiApplication app(argc, argv);
 #  elif defined BUILD_QTUI
     QtUiApplication app(argc, argv);
