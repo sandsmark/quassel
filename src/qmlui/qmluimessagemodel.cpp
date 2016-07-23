@@ -149,7 +149,7 @@ QVariant QmlUiMessageModel::data(const QModelIndex &index, int role) const
         text.replace(QRegExp("(https?)(-//)([^\\s]+)(\\.png|jpe?g|gif)"), "\\1://\\3\\4");
         // UIStyle
         text.replace("%%", "%");
-        text.replace(QRegularExpression("%D[NHCMU](.*?)%D[NHCMU]"), "<b>\\1</b>");
+        text.replace(QRegularExpression("%D[NHCMU](.*?)%D[NHCMU]"), "<i>\\1</i>");
         // mIRC
         text.replace(QRegularExpression("\x02(.*?)\x02"), "<b>\\1</b>");
         text.replace(QRegularExpression("\x1d(.*?)\x1d"), "<s>\\1</s>");
