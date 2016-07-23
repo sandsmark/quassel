@@ -33,6 +33,7 @@ public:
         NextSiblingRole,
         HighlightRole,
         SelfRole,
+        QueryRole,
         ActionRole,
     };
 
@@ -97,6 +98,7 @@ private:
         _bufferId = bufferId;
         invalidateFilter();
         Q_EMIT bufferIdChanged();
+        Q_EMIT bufferNameChanged();
         Client::backlogManager()->requestBacklog(_bufferId, -1, -1, BacklogSettings().fixedBacklogAmount());
         setNetworkId(Client::networkModel()->networkId(bufferId).toInt());
     }
