@@ -29,8 +29,9 @@ QVariant QmlUiBufferModel::data(const QModelIndex &index, int role) const
     {
         NetworkId networkId(sourceIndex.data(NetworkModel::NetworkIdRole).value<NetworkId>());
         QVariantList bufferModel;
-        QModelIndex child(sourceIndex.child(0, sourceIndex.column()));
-        while (child.isValid()) {
+        QModelIndex ourChild(index.child(0, sourceIndex.column()));
+        while (ourChild.isValid()) {
+            QModelIndex child(mapToSource(ourChild));
             BufferId bufferId(child.data(role).value<BufferId>());
             QString bufferName(dynamic_cast<NetworkModel *>(sourceModel())->bufferName(bufferId));
             int activity(child.data(NetworkModel::BufferActivityRole).value<int>());
@@ -40,7 +41,7 @@ QVariant QmlUiBufferModel::data(const QModelIndex &index, int role) const
             map.insert(QStringLiteral("bufferName"), bufferName);
             map.insert(QStringLiteral("activity"), activity);
             bufferModel.append(map);
-            child = child.sibling(child.row() + 1, child.column());
+            ourChild = ourChild.sibling(ourChild.row() + 1, ourChild.column());
         }
         return bufferModel;
     }
