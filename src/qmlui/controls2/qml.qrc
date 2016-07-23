@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/qml">
+        <file>AccountSettings.qml</file>
+        <file>MainView.qml</file>
+        <file>MessageItem.qml</file>
+        <file>MessagesView.qml</file>
+        <file>StyledLabel.qml</file>
+        <file>LoginView.qml</file>
+    </qresource>
+</RCC>
