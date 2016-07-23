@@ -67,3 +67,26 @@ QmlUiAccountModel::get(int row)
     }
     return res;
 }
+
+bool QmlUiAccountModel::createOrUpdateAccount(QVariantMap accountMap)
+{
+    for (const QByteArray roleName : roleNames()) {
+        if (roleName == "accountId") {
+            continue;
+        }
+
+        if (!accountMap.contains(roleName) || accountMap[roleName] == "") {
+            qWarning() << "Account map missing" << roleName;
+            return false;
+        }
+    }
+
+    CoreAccount account;
+    account.fromVariantMap(accountMap);
+    CoreAccountModel *model(dynamic_cast<CoreAccountModel *>(sourceModel()));
+    AccountId accountId(model->createOrUpdateAccount(account));
+    model->save();
+    setAccountId(accountId.toInt());
+
+    return true;
+}

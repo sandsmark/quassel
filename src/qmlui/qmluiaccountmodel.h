@@ -36,14 +36,7 @@ public:
     Q_INVOKABLE QVariantMap get(int row);
     Q_INVOKABLE int count() { return rowCount(); }
 
-    Q_INVOKABLE void createOrUpdateAccount(QVariantMap accountMap) {
-        CoreAccount account;
-        account.fromVariantMap(accountMap);
-        CoreAccountModel *model(dynamic_cast<CoreAccountModel *>(sourceModel()));
-        AccountId accountId(model->createOrUpdateAccount(account));
-        model->save();
-        setAccountId(accountId.toInt());
-    }
+    Q_INVOKABLE bool createOrUpdateAccount(QVariantMap accountMap);
 
     Q_INVOKABLE void removeAccount(int accountId) {
         CoreAccountModel *model(dynamic_cast<CoreAccountModel *>(sourceModel()));
