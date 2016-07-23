@@ -179,15 +179,10 @@ QVariant QmlUiMessageModel::data(const QModelIndex &index, int role) const
         return QVariant::fromValue<bool>(message.flags() & Message::Highlight);
     case SelfRole:
         return QVariant::fromValue<bool>(message.flags() & Message::Self);
+    case QueryRole:
+        return message.type() == Message::Action;
     case ActionRole:
-        switch (message.type()) {
-        case Message::Action:
-            return true;
-        case Message::Quit:
-            return !message.contents().isEmpty();
-        default:
-            return false;
-        }
+        return message.type() != Message::Plain;
     case MessageModel::MsgIdRole:
         return QVariant::fromValue<int>(message.msgId().toInt());
     default:
@@ -208,6 +203,7 @@ QHash<int, QByteArray> QmlUiMessageModel::roleNames() const
     roles.insert(HighlightRole, "highlight");
     roles.insert(SelfRole, "self");
     roles.insert(ActionRole, "action");
+    roles.insert(QueryRole, "query");
     roles.insert(MessageModel::MsgIdRole, "msgId");
     return roles;
 }
