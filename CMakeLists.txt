@@ -40,6 +40,7 @@ include(FeatureSummary)
 # ... and our own stuff
 include(QuasselCompileSettings)
 include(QuasselMacros)
+include(AndroidTargets)
 
 
 # Options and variables that can be set on the command line
