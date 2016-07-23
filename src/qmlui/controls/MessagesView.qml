@@ -1,76 +1,87 @@
-import QtQuick 2.4
+import QtQuick 2.7
 import QtQuick.Controls 1.4
 import Quassel 0.1
 
 Item {
     property alias bufferId: messagesModel.bufferId
+    property alias bufferName: messagesModel.bufferName
+    property int padding: 5
 
-//    TableView {
-//        anchors {
-//            top: parent.top
-//            bottom: messageInput.top
-//            left: parent.left
-//            right: parent.right
-//        }
-
-//        id: messagesList
-//        clip: true
-//        model: MessageModel {
-//            id: messagesModel
-//            onBacklogReceived:{
-//                messagesList.positionViewAtRow(rowCount -1, ListView.Contain)
-//            }
-//            onBufferIdChanged: messagesList.positionViewAtRow(rowCount -1, ListView.Contain)
-//        }
-//        TableViewColumn {
-//            role: "timestamp"
-//            title: "Timestamp"
-//            width: 200
-//        }
-//        TableViewColumn {
-//            role: "sender"
-//            title: "Sender"
-//            width: 200
-//        }
-//        TableViewColumn {
-//            role: "message"
-//            title: "Message"
-//        }
-
-//        Component.onCompleted: messagesList.positionViewAtRow(rowCount -1, ListView.Contain)
-//    }
-
-    ScrollView {
+    ListView {
+        id: messagesList
+        clip: true
         anchors {
             top: parent.top
             bottom: messageInput.top
             left: parent.left
             right: parent.right
+            margins: padding
+        }
+        highlight: null
+        model: MessageModel {
+            id: messagesModel
         }
 
-        ListView {
-            id: messagesList
-            clip: true
-            highlight: null
-            model: MessageModel {
-                id: messagesModel
-                onBacklogReceived:{
-                    messagesList.positionViewAtEnd()
-                }
-                onBufferIdChanged: messagesList.positionViewAtEnd()
+        header: ProgressBar {
+            id: progressBar
+            width: parent.width
+            indeterminate: true
+        }
+
+
+        // Handle scrolling to end
+        onAtYEndChanged: {
+            if (flicking) {
+                return
+            }
+            if (countBeforeRequest === 0) {
+                positionViewAtEnd()
+                return
+            }
+        }
+
+        property int countBeforeRequest: 0
+        onCountChanged: {
+            if (countBeforeRequest === 0) {
+                return
             }
 
-            Component.onCompleted: positionViewAtEnd()
-            delegate: MessageItem {
-                width: messagesList.width
-                sender: model.sender
-                lastSeen: messagesModel.lastSeenMsgId == model.msgId
-                previousSibling: model.previousSibling
-                nextSibling: model.nextSibling
-                message: model.styledMessage
-                timestamp: model.timestamp
-                highlighted: model.highlight || model.self
-                action: model.action
+            positionViewAtIndex(count - countBeforeRequest, ListView.Beginning)
+        }
+        onFlickEnded: {
+            if (atYBeginning) {
+                cancelFlick()
+                countBeforeRequest = count
+                messagesModel.requestMoreBacklog()
+            } else if (atYEnd) {
+                countBeforeRequest = 0
+            }
+        }
+
+        delegate: MessageItem {
+            width: messagesList.width
+            sender: model.sender
+            lastSeen: messagesModel.lastSeenMsgId == model.msgId
+            previousSibling: model.previousSibling
+            nextSibling: model.nextSibling
+            message: model.styledMessage
+            timestamp: model.timestamp
+            highlighted: model.highlight || model.self
+            action: model.action
+            query: model.query
+        }
+
+        Button {
+            visible: !parent.atYEnd
+            anchors {
+                bottom: parent.bottom
+                right: parent.right
+            }
+            text: "▼"
+            height: width
+            onClicked:{
+                messagesList.countBeforeRequest = 0
+                messagesList.positionViewAtEnd()
             }
         }
     }
@@ -82,6 +93,7 @@ Item {
             left: parent.left
             bottom: parent.bottom
             top: messageInput.top
+            margins: padding
         }
         verticalAlignment: Text.AlignVCenter
     }
@@ -92,7 +104,7 @@ Item {
             bottom: parent.bottom
             right: parent.right
             left: nickLabel.right
-            leftMargin: 5
+            margins: padding
         }
         enabled: messagesModel.connected
         onAccepted: {

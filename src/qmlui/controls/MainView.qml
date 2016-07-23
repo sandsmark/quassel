@@ -6,59 +6,73 @@ import QtQuick.Controls.Styles 1.4
 import Quassel 0.1
 
 ApplicationWindow {
+    id: window
     width: 1920
     height: 1080
     visible: true
-    flags: Qt.Dialog
+    visibility: "Maximized"
 
     title: qsTr('Quassel IRC')
 
-    AccountModel {
-        id: accountModel
+    property bool loggedIn: false
+    onLoggedInChanged: {
+        if (loggedIn) {
+            stackView.push(bufferComponent)
+        } else {
+            stackView.clear()
+            stackView.push(loginComponent)
+            statusText.text = "Disconnected"
+        }
     }
 
-    AccountSettings {
-        id: accountSettingsDialog
-        accountModel: accountModel
-    }
-
-
-    menuBar: MenuBar {
-        Menu {
-            id: accountsMenu
-            title: qsTr("Select account")
-            visible: !BufferModel.connected
-
-            Instantiator {
-                model: accountModel
-                onObjectAdded: accountsMenu.insertItem( index, object )
-                onObjectRemoved: accountsMenu.removeItem( object )
-                delegate: MenuItem {
-                    onTriggered: accountModel.lastAccountId = accountId
-                    text: accountName
-                }
-            }
-            MenuItem {
-                text: qsTr("Add account...")
-                onTriggered: accountSettingsDialog.open()
+    Component {
+        id: loginComponent
+        LoginView {
+            id: loginView
+            onLoggedInChanged: {
+                window.loggedIn = loggedIn
             }
         }
     }
 
-    SplitView {
-        anchors.fill: parent
+    StackView {
+        id: stackView
+        width: parent.width
+        height: parent.height
+        initialItem: loginComponent
+    }
 
+    property int currentBuffer: 0
+
+    Component {
+        id: bufferComponent
+        Item {
         TreeView {
             id: networksList
-            width: parent.width / 4
-            Layout.minimumWidth: 400
             model: BufferModel
+            anchors.fill: parent
 
-            function selectBuffer(index) {
-                messagesView.bufferId = BufferModel.getBufferId(index)
+            onVisibleChanged: {
+                if (visible) {
+                    statusText.text = "Buffers"
+                }
             }
 
-            onActivated: selectBuffer(index)
+            // Fuck you very much
+            Component.onCompleted: {
+                var modelIndex = rootIndex
+                for (var i=0; i<model.rowCount(); i++) {
+                    expand(model.index(i, 0))
+                }
+            }
+
+            function selectBuffer(index) {
+            }
+
+            onActivated: {
+                currentBuffer = BufferModel.getBufferId(index)
+                stackView.push(messagesComponent)
+            }
 
             TableViewColumn {
                 title: "Buffers"
@@ -68,37 +82,49 @@ ApplicationWindow {
             style: TreeViewStyle {
                 activateItemOnSingleClick: true
                 alternateBackgroundColor: backgroundColor
+                headerDelegate: Item {}
             }
         }
+        }
+    }
 
+    Component {
+        id: messagesComponent
         MessagesView {
             id: messagesView
-            width: 400
-            Layout.fillWidth: true
+            bufferId: currentBuffer
+            onBufferNameChanged:  {
+                statusText.text = bufferName
+            }
         }
     }
 
     toolBar: ToolBar {
         RowLayout {
             anchors.fill: parent
+
             ToolButton {
-                text: qsTr('Connect')
-                onClicked: CoreConnection.connectToCore()
-                visible: !BufferModel.connected
+                text: "<"
+                opacity: stackView.depth > 2 ? 1 : 0
+                Behavior on opacity { NumberAnimation {} }
+                visible: opacity > 0
+                enabled: visible
+                x: stackView.currentItem ? stackView.currentItem.x : 0
+                onClicked: stackView.pop()
             }
-            ToolButton {
-                text: qsTr('Help')
-                onClicked: Qt.openUrlExternally(bugUrl)
-            }
+
             Item { Layout.fillWidth: true }
-        }
-    }
-    statusBar: StatusBar {
-        RowLayout {
-            anchors.fill: parent
             Label {
                 id: statusText
+                width: parent.width - debugButton.width
 
+                Connections {
+                    target: BacklogManager
+                    enabled: !window.loggedIn
+                    onMessagesRequested: statusText.text = message
+                    onMessagesProcessed: statusText.text = message
+                    onUpdateProgress: statusText.text = "Received messages for " + received + " of " + total + " buffers"
+                }
                 Connections {
                     target: CoreConnection
                     onConnectionError: statusText.text = errorMsg
@@ -106,23 +132,43 @@ ApplicationWindow {
                     onConnectionMsg: statusText.text = msg
                 }
             }
+
             Item { Layout.fillWidth: true }
-            ProgressBar {
-                id: progressBar
-                value: 0
-                visible: value > 0.01 && value < 0.99
+            ToolButton {
+                id: debugButton
+                text: qsTr('Debug')
+                checkable: true
+//                onClicked:{
+//                    debugWindow.visible = !debugWindow.visible
+
+////                    Qt.openUrlExternally(bugUrl)
+//                }
+            }
+        }
+    }
+
+    Rectangle {
+        id: debugWindow
+        anchors {
+            fill: parent
+        }
+        color: Qt.rgba(1, 1, 1, 0.75)
+        visible: debugButton.checked
+        Flickable {
+            anchors.fill: parent
+            contentHeight: logEdit.height
+            Text {
+                id: logEdit
+                wrapMode: Text.Wrap
+                width: parent.width
 
                 Connections {
-                    target: BacklogManager
-                    onUpdateProgress: {
-                        if (!total) {
-                            return
-                        }
-                        progressBar.value = received / total
+                    target: Client
+                    onLogUpdated: {
+                        logEdit.text = msg + logEdit.text
                     }
                 }
             }
         }
     }
-
 }
