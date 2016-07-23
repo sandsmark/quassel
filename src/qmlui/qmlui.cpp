@@ -28,6 +28,12 @@ QmlUi::QmlUi() : AbstractUi(),
 {
     Q_INIT_RESOURCE(qml);
 
+#if defined(Q_OS_ANDROID)
+    QQuickStyle::setStyle("Material");
+#elif defined(Q_OS_WIN)
+    QQuickStyle::setStyle("Universal");
+#endif
+
     Quassel::loadTranslation(QLocale::system());
 #ifdef USE_UBUNTU
     _mainWin = nullptr;
