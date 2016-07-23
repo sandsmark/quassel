@@ -10,9 +10,12 @@ QmlUiBufferModel::QmlUiBufferModel(QObject *parent)
       m_config(nullptr)
 {
     connect(Client::instance(), SIGNAL(coreConnectionStateChanged(bool)), this, SIGNAL(connectedChanged()));
-    setDynamicSortFilter(true);
     setSourceModel(Client::networkModel());
-    setSortRole(Qt::DisplayRole);
+    connect(sourceModel(), &QAbstractItemModel::rowsInserted, [&](){
+        if (m_config) {
+            sort(0);
+        }
+    });
 }
 
 
@@ -64,6 +67,7 @@ void QmlUiBufferModel::setConfig(ClientBufferViewConfig *config)
 {
     m_config = config;
     connect(m_config, SIGNAL(initDone()), this, SLOT(invalidate()));
+    sort(0);
 }
 
 int QmlUiBufferModel::getBufferId(const QModelIndex &index)
@@ -97,9 +101,9 @@ bool QmlUiBufferModel::bufferLessThan(const QModelIndex &source_left, const QMod
         if (leftPos == -1 || rightPos == -1)
             return !(leftPos < rightPos);
         return leftPos < rightPos;
-    }
-    else
+    } else {
         return bufferIdLessThan(leftBufferId, rightBufferId);
+    }
 }
 
 bool QmlUiBufferModel::bufferIdLessThan(const BufferId &left, const BufferId &right) const
