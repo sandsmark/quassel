@@ -53,13 +53,21 @@ void QmlUi::init()
 #endif
     m_bufferModel = new QmlUiBufferModel(this);
 
-    qmlRegisterType<QmlUiAccountModel>("Quassel", 0, 1, "AccountModel");
     qmlRegisterType<QmlUiMessageModel>("Quassel", 0, 1, "MessageModel");
-    qmlRegisterSingletonType<CoreConnection>("Quassel", 0, 1, "CoreConnection", [](QQmlEngine *, QJSEngine*) -> QObject* {
+    qmlRegisterSingletonType<QmlUiAccountModel>("Quassel", 0, 1, "AccountModel", [](QQmlEngine *, QJSEngine*) -> QObject* {
+        return new QmlUiAccountModel;
+    });
+    qmlRegisterSingletonType<CoreConnection>("Quassel", 0, 1, "CoreConnection", [](QQmlEngine *engine, QJSEngine*) -> QObject* {
+        engine->setObjectOwnership(Client::coreConnection(), QQmlEngine::CppOwnership);
         return Client::coreConnection();
     });
-    qmlRegisterSingletonType<BacklogManager>("Quassel", 0, 1, "BacklogManager", [](QQmlEngine *, QJSEngine*) -> QObject* {
+    qmlRegisterSingletonType<BacklogManager>("Quassel", 0, 1, "BacklogManager", [](QQmlEngine *engine, QJSEngine*) -> QObject* {
+        engine->setObjectOwnership(Client::backlogManager(), QQmlEngine::CppOwnership);
         return Client::backlogManager();
+    });
+    qmlRegisterSingletonType<BacklogManager>("Quassel", 0, 1, "Client", [](QQmlEngine *engine, QJSEngine*) -> QObject* {
+        engine->setObjectOwnership(Client::instance(), QQmlEngine::CppOwnership);
+        return Client::instance();
     });
     engine->rootContext()->setContextProperty("bugUrl", QUASSEL_BUG_URL);
     engine->rootContext()->setContextProperty("BufferModel", m_bufferModel);
