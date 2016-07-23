@@ -98,9 +98,7 @@ Item {
             id: loginGrid
             columns: 2
             rowSpacing: 10
-            //                    Layout.fillWidth: true
             Layout.alignment: Qt.AlignHCenter
-            //                    Layout.alignment: Qt.AlignCenter
             
             enabled: CoreConnection.state === CoreConnection.Disconnected
             
@@ -132,6 +130,7 @@ Item {
                 currentIndex: AccountModel.indexOfLastAccount()
                 Layout.columnSpan: 2
                 Layout.fillWidth: true
+                visible: !editMode
                 onCurrentIndexChanged:{
                     currentAccount = AccountModel.get(currentIndex)
                     changed = false
@@ -152,11 +151,6 @@ Item {
                     currentAccount.accountName = text
                     changed = true
                 }
-            }
-
-            Item {
-                height: 10
-                Layout.columnSpan: 2
             }
             
             Label {
@@ -222,8 +216,9 @@ Item {
             Item {
                 height: 20
                 Layout.columnSpan: 2
+                visible: !editMode
             }
-            
+
             ProgressBar {
                 id: progressBar
                 value: 0
@@ -262,6 +257,10 @@ Item {
             }
             enabled: CoreConnection.state === CoreConnection.Disconnected
             Layout.fillWidth: true
+        }
+        Item {
+            Layout.fillHeight: true
+            visible: editMode
         }
     }
 }
