@@ -77,8 +77,6 @@ bool QmlUiBufferModel::lessThan(const QModelIndex &source_left, const QModelInde
     int rightItemType = sourceModel()->data(source_right, NetworkModel::ItemTypeRole).toInt();
     int itemType = leftItemType & rightItemType;
     switch (itemType) {
-    case NetworkModel::NetworkItemType:
-        return QSortFilterProxyModel::lessThan(source_left, source_right);
     case NetworkModel::BufferItemType:
         return bufferLessThan(source_left, source_right);
     default:
@@ -127,7 +125,7 @@ bool QmlUiBufferModel::filterAcceptsRow(int source_row, const QModelIndex &sourc
 
     NetworkModel::ItemType childType = (NetworkModel::ItemType)sourceModel()->data(child, NetworkModel::ItemTypeRole).toInt();
     if (childType == NetworkModel::NetworkItemType) {
-        return sourceModel()->data(child, NetworkModel::ItemActiveRole).toBool();
+        return true;
     }
     if (childType != NetworkModel::BufferItemType) {
         return false;
