@@ -226,3 +226,8 @@ void QmlUiMessageModel::userInput(const QString& message)
 {
     Client::userInput(Client::networkModel()->bufferInfo(_bufferId), message);
 }
+
+void QmlUiMessageModel::requestMoreBacklog()
+{
+    Client::messageModel()->requestBacklog(_bufferId);
+}
