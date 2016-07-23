@@ -224,6 +224,5 @@ bool QmlUiMessageModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourc
 
 void QmlUiMessageModel::userInput(const QString& message)
 {
-    BufferInfo bufferInfo(_bufferId, _networkId, BufferInfo::ChannelBuffer);
-    Client::userInput(bufferInfo, message);
+    Client::userInput(Client::networkModel()->bufferInfo(_bufferId), message);
 }
