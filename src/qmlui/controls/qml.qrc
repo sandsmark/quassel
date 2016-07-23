@@ -5,5 +5,6 @@
         <file>MessageItem.qml</file>
         <file>MessagesView.qml</file>
         <file>StyledLabel.qml</file>
+        <file>LoginView.qml</file>
     </qresource>
 </RCC>
