@@ -52,6 +52,7 @@ public:
 Q_SIGNALS:
     void lastAccountIdChanged();
     void countChanged();
+    void error(QString message);
 
 protected:
 
