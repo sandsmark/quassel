@@ -17,6 +17,7 @@
 #include "qmluiapplication.h"
 #include "qmluimessagemodel.h"
 #include "qmluimessageprocessor.h"
+#include "bufferviewoverlay.h"
 
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
@@ -120,6 +121,8 @@ void QmlUi::disconnectedFromCore()
 
 void QmlUi::addBufferView(int bufferViewConfigId)
 {
+    qDebug() << "Adding buffer view:" << bufferViewConfigId;
+    Client::bufferViewOverlay()->addView(bufferViewConfigId);
     m_bufferModel->setConfig(Client::bufferViewManager()->clientBufferViewConfig(bufferViewConfigId));
 }
 
