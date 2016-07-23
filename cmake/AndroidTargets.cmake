@@ -18,6 +18,9 @@
 
 
 if(${CMAKE_SYSTEM_NAME} STREQUAL "Android")
+    # Work around bug in extra-cmake-modules
+    SET(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+    SET(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
     function(add_apk _target)
         set(APK_SOURCE "${CMAKE_SOURCE_DIR}/android/")
         if(NOT EXISTS "${APK_SOURCE}/${_target}/AndroidManifest.xml")
