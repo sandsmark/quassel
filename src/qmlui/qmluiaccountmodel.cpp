@@ -34,7 +34,8 @@ QVariant QmlUiAccountModel::data(const QModelIndex &index, int role) const
     case PortRole:
         return account.port();
     case UseSecureConnectionRole:
-        return account.useSsl();
+        return true;
+//        return account.useSsl();
     default:
         return QVariant();
     }
