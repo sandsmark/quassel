@@ -1,5 +1,7 @@
 # Builds the three main targets
 
+set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR})
+
 add_subdirectory(common)
 include_directories(BEFORE common)
 if(BUILD_CORE)
@@ -53,8 +55,7 @@ if(WANT_CORE)
   qt_use_modules(quasselcore Core Network ${CORE_QT_MODULES})
   add_dependencies(quasselcore po)
   set_target_properties(quasselcore PROPERTIES
-                                    COMPILE_FLAGS "-DBUILD_CORE"
-                                    OUTPUT_NAME ../quasselcore)
+                                    COMPILE_FLAGS "-DBUILD_CORE")
   target_link_libraries(quasselcore mod_core mod_common ${COMMON_LIBRARIES} ${QUASSEL_SSL_LIBRARIES} ${QT_QTMAIN_LIBRARY})
   install(TARGETS quasselcore RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 endif(WANT_CORE)
@@ -68,8 +69,7 @@ if(WANT_QTCLIENT)
   qt_use_modules(quasselclient Core Gui Network ${CLIENT_QT_MODULES})
   add_dependencies(quasselclient po)
   set_target_properties(quasselclient PROPERTIES
-                                      COMPILE_FLAGS "-DBUILD_QTUI"
-                                      OUTPUT_NAME ../quasselclient)
+                                      COMPILE_FLAGS "-DBUILD_QTUI")
   if(HAVE_QML)
       target_link_libraries(quasselclient mod_qmlui mod_client mod_common ${COMMON_LIBRARIES} ${CLIENT_LIBRARIES} ${QUASSEL_SSL_LIBRARIES} ${QT_QTMAIN_LIBRARY})
   else()
@@ -87,8 +87,7 @@ if(WANT_MONO)
   qt_use_modules(quassel Core Gui Network ${CLIENT_QT_MODULES} ${CORE_QT_MODULES})
   add_dependencies(quassel po)
   set_target_properties(quassel PROPERTIES
-                                COMPILE_FLAGS "-DBUILD_MONO"
-                                OUTPUT_NAME ../quassel)
+                                COMPILE_FLAGS "-DBUILD_MONO")
   if(HAVE_QML)
       target_link_libraries(quassel mod_qmlui mod_client mod_core mod_common ${COMMON_LIBRARIES} ${CLIENT_LIBRARIES} ${QUASSEL_SSL_LIBRARIES} ${QT_QTMAIN_LIBRARY})
   else()
