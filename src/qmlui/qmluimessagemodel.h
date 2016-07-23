@@ -46,6 +46,7 @@ public:
 
 public Q_SLOTS:
     Q_INVOKABLE void userInput(const QString& message);
+    void requestMoreBacklog();
 
 Q_SIGNALS:
     void bufferIdChanged();
