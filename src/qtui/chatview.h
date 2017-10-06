@@ -99,7 +99,6 @@ protected slots:
 
 private slots:
     void lastLineChanged(QGraphicsItem *chatLine, qreal offset);
-    void adjustSceneRect();
     void checkChatLineCaches();
     void mouseMoveWhileSelecting(const QPointF &scenePos);
     void scrollTimerTimeout();

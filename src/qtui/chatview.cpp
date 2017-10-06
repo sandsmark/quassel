@@ -75,7 +75,6 @@ void ChatView::init(MessageFilter *filter)
     connect(&_scrollTimer, SIGNAL(timeout()), SLOT(scrollTimerTimeout()));
 
     _scene = new ChatScene(filter, filter->idString(), viewport()->width(), this);
-    connect(_scene, SIGNAL(sceneRectChanged(const QRectF &)), this, SLOT(adjustSceneRect()));
     connect(_scene, SIGNAL(lastLineChanged(QGraphicsItem *, qreal)), this, SLOT(lastLineChanged(QGraphicsItem *, qreal)));
     connect(_scene, SIGNAL(mouseMoveWhileSelecting(const QPointF &)), this, SLOT(mouseMoveWhileSelecting(const QPointF &)));
     setScene(_scene);
@@ -184,7 +183,6 @@ void ChatView::resizeEvent(QResizeEvent *event)
     }
 
     scene()->updateForViewport(viewport()->width(), viewport()->height());
-    adjustSceneRect();
 
     if(atBottom)
     {
@@ -192,19 +190,6 @@ void ChatView::resizeEvent(QResizeEvent *event)
         verticalScrollBar()->setValue(verticalScrollBar()->maximum());
     }
     checkChatLineCaches();
-}
-
-
-void ChatView::adjustSceneRect()
-{
-    // Workaround for QTBUG-6322
-    // If the viewport's sceneRect() is (almost) as wide as as the viewport itself,
-    // Qt wants to reserve space for scrollbars even if they're turned off, resulting in
-    // an ugly white space at the bottom of the ChatView.
-    // Since the view's scene's width actually doesn't matter at all, we just adjust it
-    // by some hopefully large enough value to avoid this problem.
-
-    setSceneRect(scene()->sceneRect().adjusted(0, 0, -25, 0));
 }
 
 
