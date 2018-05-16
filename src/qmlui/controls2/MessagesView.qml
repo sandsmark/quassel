@@ -4,7 +4,10 @@ import QtQuick.Layouts 1.3
 import Quassel 0.1
 
 Page {
+    id: messagesView
     property alias bufferId: messagesModel.bufferId
+
+    property int nickWidth: 200
 
     header: ToolBar {
         RowLayout {
@@ -39,16 +42,19 @@ Page {
         }
 
         Component.onCompleted: positionViewAtEnd()
+
         delegate: MessageItem {
             width: messagesList.width
             sender: model.sender
-            lastSeen: messagesModel.lastSeenMsgId == model.msgId
+            lastSeen: messagesModel.lastSeenMsgId === model.msgId
             previousSibling: model.previousSibling
             nextSibling: model.nextSibling
             message: model.styledMessage
             timestamp: model.timestamp
             highlighted: model.highlight || model.self
             action: model.action
+            nickWidth: messagesView.nickWidth
+            onActualNickWidthChanged: messagesView.nickWidth = Math.max(messagesView.nickWidth, actualNickWidth)
         }
     }
 

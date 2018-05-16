@@ -322,8 +322,9 @@ void CoreConnection::reconnectToCore()
 
 bool CoreConnection::connectToCore(AccountId accId)
 {
-    if (isConnected())
+    if (isConnected()) {
         return false;
+    }
 
     CoreAccountSettings s;
 

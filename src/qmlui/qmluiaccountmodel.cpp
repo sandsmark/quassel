@@ -22,7 +22,7 @@ QVariant QmlUiAccountModel::data(const QModelIndex &index, int role) const
     CoreAccount account(dynamic_cast<CoreAccountModel *>(sourceModel())->account(sourceIndex));
     switch(role) {
     case AccountIdRole:
-        return account.accountId().toInt();
+        return QVariant::fromValue(account.accountId());
     case AccountNameRole:
         return account.accountName();
     case HostnameRole:
